@@ -96,14 +96,4 @@ class ParserTest {
             |1565725831679 Maleya Aaronjosh
         """.trimMargin()
     }
-
-
-    private fun parse(log: String, connectedTo: String, from: Long, to: Long): Set<String> =
-        log.lines()
-            .filter {
-                val (timestamp, _, host) = it.split(" ")
-                host == connectedTo && timestamp.toLong() >= from && timestamp.toLong() <= to
-            }
-            .map { it.split(" ")[1] }
-            .toSet()
 }
