@@ -5,20 +5,32 @@ import kotlin.test.Test
 class ParserTest {
     @Test
     fun `connected hosts`() {
-        val log = """Shaquera
-        |Zidan
-        |Adalhi
+        val log = """
+            |Shaquera Aaliayh
+            |Dristen Aadison
+            |Stephens Aaronjosh
+            |Zidan Aaliayh
+            |Glorimar Aadison
+            |Keeshaun Aaronjosh
+            |Adalhi Aaliayh
+            |Nathanael Aadison
+            |Alexxis Aaronjosh
         """.trimMargin()
 
-        val hosts = parse(log)
+        val hosts = parse(log, "Aaliayh")
 
-        expect(hosts).toBe(setOf(
-            "Shaquera",
-            "Zidan",
-            "Adalhi",
-        ))
+        expect(hosts).toBe(
+            setOf(
+                "Shaquera",
+                "Zidan",
+                "Adalhi",
+            )
+        )
     }
 
-    private fun parse(log: String): Set<String> =
-        log.lines().toSet()
+    private fun parse(log: String, host: String): Set<String> =
+        log.lines()
+            .filter { it.split(" ")[1] == host }
+            .map { it.split(" ")[0] }
+            .toSet()
 }
