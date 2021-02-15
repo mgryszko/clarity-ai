@@ -4,7 +4,7 @@ import kotlin.test.Test
 
 class ParserTest {
     @Test
-    fun `connected hosts`() {
+    fun `exact timestamps`() {
         val hosts = parse(log = log, connectedTo = "Aaliayh", from = 1565656607767, to = 1565680778409)
 
         expect(hosts).toBe(
@@ -14,6 +14,26 @@ class ParserTest {
                 "Adalhi",
             )
         )
+    }
+
+    @Test
+    fun `timestamps expanded range by 1ms`() {
+        val hosts = parse(log = log, connectedTo = "Aaliayh", from = 1565656607766, to = 1565680778410)
+
+        expect(hosts).toBe(
+            setOf(
+                "Shaquera",
+                "Zidan",
+                "Adalhi",
+            )
+        )
+    }
+
+    @Test
+    fun `timestamps reduced range by 1ms`() {
+        val hosts = parse(log = log, connectedTo = "Aaliayh", from = 1565656607768, to = 1565680778408)
+
+        expect(hosts).toBe(setOf("Zidan"))
     }
 
     val log = """
