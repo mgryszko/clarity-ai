@@ -34,7 +34,12 @@ class ParserTest {
     inner class Parse {
         @Test
         fun `exact timestamps`() {
-            val hosts = parse(lines = lines, connectedTo = Host("Aaliayh"), from = 1565656607767, to = 1565680778409)
+            val hosts = parse(
+                lines = lines,
+                connectedTo = Host("Aaliayh"),
+                from = Timestamp(1565656607767),
+                to = Timestamp(1565680778409)
+            )
 
             expect(hosts).toBe(
                 setOf(
@@ -47,7 +52,12 @@ class ParserTest {
 
         @Test
         fun `timestamps expanded range by 1ms`() {
-            val hosts = parse(lines = lines, connectedTo = Host("Aaliayh"), from = 1565656607766, to = 1565680778410)
+            val hosts = parse(
+                lines = lines,
+                connectedTo = Host("Aaliayh"),
+                from = Timestamp(1565656607766),
+                to = Timestamp(1565680778410)
+            )
 
             expect(hosts).toBe(
                 setOf(
@@ -60,7 +70,12 @@ class ParserTest {
 
         @Test
         fun `timestamps reduced range by 1ms`() {
-            val hosts = parse(lines = lines, connectedTo = Host("Aaliayh"), from = 1565656607768, to = 1565680778408)
+            val hosts = parse(
+                lines = lines,
+                connectedTo = Host("Aaliayh"),
+                from = Timestamp(1565656607768),
+                to = Timestamp(1565680778408)
+            )
 
             expect(hosts).toBe(setOf("Zidan"))
         }

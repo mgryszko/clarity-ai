@@ -11,23 +11,24 @@ fun main(args : Array<String>) {
 
 fun readParsePrint(logFileName: String, connectedTo: String, from: Long, to: Long, onConnectedHosts: (Set<String>) -> Unit) {
     val hosts = File(logFileName).useLines {
-        parse(lines = it, connectedTo = Host(connectedTo), from = from, to = to)
+        parse(lines = it, connectedTo = Host(connectedTo), from = Timestamp(from), to = Timestamp(to))
     }
 
     onConnectedHosts(hosts)
 }
 
 inline class Host(val name: String)
+inline class Timestamp(val instant: Long)
 
 fun parse(
     lines: Sequence<String>,
     connectedTo: Host,
-    from: Long,
-    to: Long
+    from: Timestamp,
+    to: Timestamp
 ) = lines
     .filter {
         val (timestamp, _, host) = it.split(" ")
-        host == connectedTo.name && timestamp.toLong() >= from && timestamp.toLong() <= to
+        host == connectedTo.name && timestamp.toLong() >= from.instant && timestamp.toLong() <= to.instant
     }
     .map { it.split(" ")[1] }
     .toSet()
