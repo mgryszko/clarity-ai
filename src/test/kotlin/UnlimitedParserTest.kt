@@ -8,7 +8,8 @@ class UnlimitedParserTest {
         val hosts = connectedSourceHosts(
             lines = lines,
             target = Host("Aadison"),
-            window = 1000
+            initialInterval = Timestamp(0),
+            reportInterval = 1000,
         )
 
         expect(hosts).toBe(
@@ -37,19 +38,18 @@ class UnlimitedParserTest {
         )
     }
 
-    private fun connectedSourceHosts(lines: Sequence<LogLine>, target: Host, window: Int): List<Set<Host>> {
+    private fun connectedSourceHosts(lines: Sequence<LogLine>, target: Host, initialInterval: Timestamp, reportInterval: Long): List<Set<Host>> {
         val hosts = mutableSetOf<Host>()
         val reports = mutableListOf<Set<Host>>()
-        var nextWindowStart: Long? = null
+        var nextWindowStart = initialInterval.instant + reportInterval
         lines.forEach {
-            if (nextWindowStart == null) nextWindowStart = it.timestamp.instant + window
-            if (it.timestamp.instant >= nextWindowStart!!) {
+            if (it.timestamp.instant >= nextWindowStart) {
                 reports.add(hosts.toSet())
                 hosts.clear()
-                nextWindowStart = nextWindowStart!! + window
+                nextWindowStart += reportInterval
             }
 
-            if (it.target == target && it.timestamp.instant < nextWindowStart!!) hosts.add(it.source)
+            if (it.target == target && it.timestamp.instant < nextWindowStart) hosts.add(it.source)
         }
         reports.add(hosts.toSet())
         return reports
