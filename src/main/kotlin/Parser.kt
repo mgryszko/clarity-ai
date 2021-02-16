@@ -10,7 +10,7 @@ fun main(args: Array<String>) {
 }
 
 fun readParsePrint(logFileName: String, connectedTo: String, from: Long, to: Long, onConnectedHosts: (Collection<String>) -> Unit) {
-    val hosts = File(logFileName).useLines { lines ->
+    val hosts = read(logFileName) { lines ->
         val parsedLines = parse(lines)
         findConnectedHosts(
             lines = parsedLines,
@@ -22,6 +22,9 @@ fun readParsePrint(logFileName: String, connectedTo: String, from: Long, to: Lon
 
     onConnectedHosts(hosts.map(Host::name))
 }
+
+private fun <T> read(fileName: String, processLines: (Sequence<String>) -> T): T =
+    File(fileName).useLines(Charsets.UTF_8, processLines)
 
 private fun parse(lines: Sequence<String>): Sequence<LogLine> = lines.map {
     val (timestamp, connectedFrom, connectedTo) = it.split(" ")
