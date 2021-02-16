@@ -6,11 +6,15 @@ fun main(args : Array<String>) {
     val from = args[2].toLong()
     val to = args[3].toLong()
 
+    readParsePrint(logFileName, connectedTo, from, to, ::println)
+}
+
+fun readParsePrint(logFileName: String, connectedTo: String, from: Long, to: Long, onConnectedHosts: (Set<String>) -> Unit) {
     val hosts = File(logFileName).useLines {
         parse(lines = it, connectedTo = connectedTo, from = from, to = to)
     }
 
-    println(hosts)
+    onConnectedHosts(hosts)
 }
 
 fun parse(

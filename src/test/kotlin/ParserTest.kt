@@ -1,17 +1,24 @@
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import org.junit.jupiter.api.Nested
-import java.io.File
 import kotlin.test.Test
 
 class ParserTest {
     @Nested
-    inner class FromFile {
+    inner class ReadParsePrint {
         @Test
         fun `exact timestamps`() {
-            val lines = File(javaClass.getResource("input-file-10000.txt").path).readLines().asSequence()
+            var hosts: Set<String>? = null
+            val print: (Set<String>) -> Unit = { hosts = it }
+            val fileName = javaClass.getResource("input-file-10000.txt").path
 
-            val hosts = parse(lines = lines, connectedTo = "Aaliayh", from = 1565656607767, to = 1565680778409)
+            readParsePrint(
+                logFileName = fileName,
+                connectedTo = "Aaliayh",
+                from = 1565656607767,
+                to = 1565680778409,
+                onConnectedHosts = print
+            )
 
             expect(hosts).toBe(
                 setOf(
@@ -24,7 +31,7 @@ class ParserTest {
     }
 
     @Nested
-    inner class FromString {
+    inner class Parse {
         @Test
         fun `exact timestamps`() {
             val hosts = parse(lines = lines, connectedTo = "Aaliayh", from = 1565656607767, to = 1565680778409)
