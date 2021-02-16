@@ -34,18 +34,49 @@ class UnlimitedParserTest {
         )
     }
 
+    @Test
+    fun `out of order entries`() {
+        val hosts = connectedSourceHosts(
+            lines = sequenceOf(
+                LogLine(Timestamp(0), Host("alpha"), Host("A")),
+                LogLine(Timestamp(200), Host("omega"), Host("B")),
+                LogLine(Timestamp(100), Host("::"), Host("A")),
+                LogLine(Timestamp(150), Host("::"), Host("A")),
+                LogLine(Timestamp(201), Host("beta"), Host("A")),
+                LogLine(Timestamp(400), Host("psi"), Host("B")),
+            ),
+            target = Host("A"),
+            initialInterval = Timestamp(0),
+            reportInterval = 500,
+        )
+
+        expect(hosts).toBe(
+            listOf(
+                setOf(
+                    Host("alpha"),
+                    Host("beta"),
+                ),
+            )
+        )
+    }
+
     private fun connectedSourceHosts(lines: Sequence<LogLine>, target: Host, initialInterval: Timestamp, reportInterval: Long): List<Set<Host>> {
         val hosts = mutableSetOf<Host>()
         val reports = mutableListOf<Set<Host>>()
         var nextWindowStart = initialInterval.instant + reportInterval
+        var lastTimestamp = initialInterval.instant
         lines.forEach {
             if (it.timestamp.instant >= nextWindowStart) {
                 reports.add(hosts.toSet())
                 hosts.clear()
                 nextWindowStart += reportInterval
             }
-
-            if (it.target == target && it.timestamp.instant < nextWindowStart) hosts.add(it.source)
+            if (it.timestamp.instant >= lastTimestamp) {
+                lastTimestamp = it.timestamp.instant
+                if (it.target == target && it.timestamp.instant < nextWindowStart) {
+                    hosts.add(it.source)
+                }
+            }
         }
         reports.add(hosts.toSet())
         return reports
