@@ -12,10 +12,17 @@ fun main(args : Array<String>) {
 }
 
 fun parse(log: String, connectedTo: String, from: Long, to: Long): Set<String> =
-    log.lines()
-        .filter {
-            val (timestamp, _, host) = it.split(" ")
-            host == connectedTo && timestamp.toLong() >= from && timestamp.toLong() <= to
-        }
-        .map { it.split(" ")[1] }
-        .toSet()
+    parse(log.lines().asSequence(), connectedTo, from, to)
+
+fun parse(
+    lines: Sequence<String>,
+    connectedTo: String,
+    from: Long,
+    to: Long
+) = lines
+    .filter {
+        val (timestamp, _, host) = it.split(" ")
+        host == connectedTo && timestamp.toLong() >= from && timestamp.toLong() <= to
+    }
+    .map { it.split(" ")[1] }
+    .toSet()
