@@ -4,7 +4,7 @@ import kotlin.test.Test
 
 class UnlimitedParserTest {
     @Test
-    fun `connected sources in first window`() {
+    fun `connected sources in all windows`() {
         val hosts = connectedSourceHosts(
             lines = lines,
             target = Host("Aadison"),
@@ -12,19 +12,47 @@ class UnlimitedParserTest {
         )
 
         expect(hosts).toBe(
-            setOf(
-                Host("Eddison"),
+            listOf(
+                setOf(
+                    Host("Eddison"),
+                ),
+                setOf(
+                    Host("Glorimar"),
+                    Host("Tashaya"),
+                ),
+                setOf(
+                    Host("Delona"),
+                    Host("Melik"),
+                    Host("Haileyjo"),
+                    Host("Dristen"),
+                    Host("Dominiq"),
+                    Host("Evelyse"),
+                ),
+                setOf(
+                    Host("Nathanael"),
+                    Host("Kynlie"),
+                    Host("Ricquan"),
+                ),
             )
         )
     }
 
-    private fun connectedSourceHosts(lines: Sequence<LogLine>, target: Host, window: Int): Set<Host> {
-        val hosts = mutableListOf<Host>()
-        val nextWindowStart = 0 + window
+    private fun connectedSourceHosts(lines: Sequence<LogLine>, target: Host, window: Int): List<Set<Host>> {
+        val hosts = mutableSetOf<Host>()
+        val reports = mutableListOf<Set<Host>>()
+        var nextWindowStart: Long? = null
         lines.forEach {
-            if (it.target == target && it.timestamp.instant < nextWindowStart) hosts.add(it.source)
+            if (nextWindowStart == null) nextWindowStart = it.timestamp.instant + window
+            if (it.timestamp.instant >= nextWindowStart!!) {
+                reports.add(hosts.toSet())
+                hosts.clear()
+                nextWindowStart = nextWindowStart!! + window
+            }
+
+            if (it.target == target && it.timestamp.instant < nextWindowStart!!) hosts.add(it.source)
         }
-        return hosts.toSet()
+        reports.add(hosts.toSet())
+        return reports
     }
 
     val lines = sequenceOf(
