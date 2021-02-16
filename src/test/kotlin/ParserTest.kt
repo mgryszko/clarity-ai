@@ -31,10 +31,10 @@ class ParserTest {
     }
 
     @Nested
-    inner class Parse {
+    inner class FindConnectedHosts {
         @Test
         fun `exact timestamps`() {
-            val hosts = parse(
+            val hosts = findConnectedHosts(
                 lines = lines,
                 connectedTo = Host("Aaliayh"),
                 from = Timestamp(1565656607767),
@@ -52,7 +52,7 @@ class ParserTest {
 
         @Test
         fun `timestamps expanded range by 1ms`() {
-            val hosts = parse(
+            val hosts = findConnectedHosts(
                 lines = lines,
                 connectedTo = Host("Aaliayh"),
                 from = Timestamp(1565656607766),
@@ -70,7 +70,7 @@ class ParserTest {
 
         @Test
         fun `timestamps reduced range by 1ms`() {
-            val hosts = parse(
+            val hosts = findConnectedHosts(
                 lines = lines,
                 connectedTo = Host("Aaliayh"),
                 from = Timestamp(1565656607768),
@@ -81,42 +81,42 @@ class ParserTest {
         }
 
         val lines = sequenceOf(
-            "1565648096156 Dristen Aadison",
-            "1565648978434 Glorimar Aadison",
-            "1565657790599 Nathanael Aadison",
-            "1565678376783 Evelyse Aadison",
-            "1565681584555 Delona Aadison",
-            "1565699872298 Ricquan Aadison",
-            "1565705846562 Dominiq Aadison",
-            "1565708805274 Eddison Aadison",
-            "1565714852680 Tashaya Aadison",
-            "1565716538865 Kynlie Aadison",
-            "1565719178421 Melik Aadison",
-            "1565731189448 Haileyjo Aadison",
-            "1565653852901 Dayonte Aaliayh",
-            "1565656607767 Shaquera Aaliayh",
-            "1565670330430 Zidan Aaliayh",
-            "1565680778409 Adalhi Aaliayh",
-            "1565681406500 Terryn Aaliayh",
-            "1565685740554 Kyus Aaliayh",
-            "1565687038949 Taison Aaliayh",
-            "1565699899082 Cliff Aaliayh",
-            "1565717675105 Ivy Aaliayh",
-            "1565724303383 Azarel Aaliayh",
-            "1565647634157 Stephens Aaronjosh",
-            "1565649189199 Keeshaun Aaronjosh",
-            "1565650785776 Alexxis Aaronjosh",
-            "1565652933212 Makaiya Aaronjosh",
-            "1565654551392 Ayania Aaronjosh",
-            "1565654641363 Lizbett Aaronjosh",
-            "1565658001662 Theresamarie Aaronjosh",
-            "1565663289300 Taquana Aaronjosh",
-            "1565679979203 Akos Aaronjosh",
-            "1565688191672 Suhanee Aaronjosh",
-            "1565718906076 Jacquis Aaronjosh",
-            "1565719660124 Kayliyah Aaronjosh",
-            "1565722415638 Genai Aaronjosh",
-            "1565725831679 Maleya Aaronjosh",
+            LogLine(Timestamp(1565648096156), Host("Dristen"), Host("Aadison")),
+            LogLine(Timestamp(1565648978434), Host("Glorimar"), Host("Aadison")),
+            LogLine(Timestamp(1565657790599), Host("Nathanael"), Host("Aadison")),
+            LogLine(Timestamp(1565678376783), Host("Evelyse"), Host("Aadison")),
+            LogLine(Timestamp(1565681584555), Host("Delona"), Host("Aadison")),
+            LogLine(Timestamp(1565699872298), Host("Ricquan"), Host("Aadison")),
+            LogLine(Timestamp(1565705846562), Host("Dominiq"), Host("Aadison")),
+            LogLine(Timestamp(1565708805274), Host("Eddison"), Host("Aadison")),
+            LogLine(Timestamp(1565714852680), Host("Tashaya"), Host("Aadison")),
+            LogLine(Timestamp(1565716538865), Host("Kynlie"), Host("Aadison")),
+            LogLine(Timestamp(1565719178421), Host("Melik"), Host("Aadison")),
+            LogLine(Timestamp(1565731189448), Host("Haileyjo"), Host("Aadison")),
+            LogLine(Timestamp(1565653852901), Host("Dayonte"), Host("Aaliayh")),
+            LogLine(Timestamp(1565656607767), Host("Shaquera"), Host("Aaliayh")),
+            LogLine(Timestamp(1565670330430), Host("Zidan"), Host("Aaliayh")),
+            LogLine(Timestamp(1565680778409), Host("Adalhi"), Host("Aaliayh")),
+            LogLine(Timestamp(1565681406500), Host("Terryn"), Host("Aaliayh")),
+            LogLine(Timestamp(1565685740554), Host("Kyus"), Host("Aaliayh")),
+            LogLine(Timestamp(1565687038949), Host("Taison"), Host("Aaliayh")),
+            LogLine(Timestamp(1565699899082), Host("Cliff"), Host("Aaliayh")),
+            LogLine(Timestamp(1565717675105), Host("Ivy"), Host("Aaliayh")),
+            LogLine(Timestamp(1565724303383), Host("Azarel"), Host("Aaliayh")),
+            LogLine(Timestamp(1565647634157), Host("Stephens"), Host("Aaronjosh")),
+            LogLine(Timestamp(1565649189199), Host("Keeshaun"), Host("Aaronjosh")),
+            LogLine(Timestamp(1565650785776), Host("Alexxis"), Host("Aaronjosh")),
+            LogLine(Timestamp(1565652933212), Host("Makaiya"), Host("Aaronjosh")),
+            LogLine(Timestamp(1565654551392), Host("Ayania"), Host("Aaronjosh")),
+            LogLine(Timestamp(1565654641363), Host("Lizbett"), Host("Aaronjosh")),
+            LogLine(Timestamp(1565658001662), Host("Theresamarie"), Host("Aaronjosh")),
+            LogLine(Timestamp(1565663289300), Host("Taquana"), Host("Aaronjosh")),
+            LogLine(Timestamp(1565679979203), Host("Akos"), Host("Aaronjosh")),
+            LogLine(Timestamp(1565688191672), Host("Suhanee"), Host("Aaronjosh")),
+            LogLine(Timestamp(1565718906076), Host("Jacquis"), Host("Aaronjosh")),
+            LogLine(Timestamp(1565719660124), Host("Kayliyah"), Host("Aaronjosh")),
+            LogLine(Timestamp(1565722415638), Host("Genai"), Host("Aaronjosh")),
+            LogLine(Timestamp(1565725831679), Host("Maleya"), Host("Aaronjosh")),
         )
     }
 }

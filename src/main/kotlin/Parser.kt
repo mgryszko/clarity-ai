@@ -1,6 +1,6 @@
 import java.io.File
 
-fun main(args : Array<String>) {
+fun main(args: Array<String>) {
     val logFileName = args[0]
     val connectedTo = args[1]
     val from = args[2].toLong()
@@ -11,7 +11,11 @@ fun main(args : Array<String>) {
 
 fun readParsePrint(logFileName: String, connectedTo: String, from: Long, to: Long, onConnectedHosts: (Collection<String>) -> Unit) {
     val hosts = File(logFileName).useLines {
-        parse(lines = it, connectedTo = Host(connectedTo), from = Timestamp(from), to = Timestamp(to))
+        val parsedLines = it.map {
+            val (timestamp, connectedFrom, connectedTo) = it.split(" ")
+            LogLine(timestamp = Timestamp(timestamp.toLong()), connectedFrom = Host(connectedFrom), connectedTo = Host(connectedTo))
+        }
+        findConnectedHosts(lines = parsedLines, connectedTo = Host(connectedTo), from = Timestamp(from), to = Timestamp(to))
     }
 
     onConnectedHosts(hosts.map(Host::name))
@@ -19,16 +23,16 @@ fun readParsePrint(logFileName: String, connectedTo: String, from: Long, to: Lon
 
 inline class Host(val name: String)
 inline class Timestamp(val instant: Long)
+data class LogLine(val timestamp: Timestamp, val connectedFrom: Host, val connectedTo: Host)
 
-fun parse(
-    lines: Sequence<String>,
+fun findConnectedHosts(
+    lines: Sequence<LogLine>,
     connectedTo: Host,
     from: Timestamp,
     to: Timestamp
 ): Set<Host> = lines
-    .filter {
-        val (timestamp, _, host) = it.split(" ")
-        host == connectedTo.name && timestamp.toLong() >= from.instant && timestamp.toLong() <= to.instant
+    .filter { (timestamp, _, lineConnectedTo) ->
+        lineConnectedTo == connectedTo && timestamp.instant >= from.instant && timestamp.instant <= to.instant
     }
-    .map { Host(it.split(" ")[1]) }
+    .map(LogLine::connectedFrom)
     .toSet()
