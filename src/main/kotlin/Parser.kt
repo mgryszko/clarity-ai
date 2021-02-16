@@ -26,10 +26,13 @@ fun readParsePrint(logFileName: String, connectedTo: String, from: Long, to: Lon
 private fun <T> read(fileName: String, processLines: (Sequence<String>) -> T): T =
     File(fileName).useLines(Charsets.UTF_8, processLines)
 
-private fun parse(lines: Sequence<String>): Sequence<LogLine> = lines.map {
-    val (timestamp, connectedFrom, connectedTo) = it.split(" ")
-    LogLine(timestamp = Timestamp(timestamp.toLong()), connectedFrom = Host(connectedFrom), connectedTo = Host(connectedTo))
-}
+private fun parse(lines: Sequence<String>): Sequence<LogLine> =
+    lines
+        .filter(String::isNotBlank)
+        .map { line ->
+            val (timestamp, connectedFrom, connectedTo) = line.split(" ")
+            LogLine(timestamp = Timestamp(timestamp.toLong()), connectedFrom = Host(connectedFrom), connectedTo = Host(connectedTo))
+        }
 
 inline class Host(val name: String)
 inline class Timestamp(val instant: Long)
