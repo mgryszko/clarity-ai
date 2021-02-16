@@ -7,7 +7,7 @@ class ParserTest {
     @Nested
     inner class ReadParsePrint {
         @Test
-        fun `exact timestamps`() {
+        fun `connected hosts by timestamp range`() {
             var hosts: Set<String>? = null
             val print: (Collection<String>) -> Unit = { hosts = it.toSet() }
             val fileName = javaClass.getResource("input-file-10000.txt").path
