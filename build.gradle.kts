@@ -59,5 +59,5 @@ tasks.test {
 }
 
 application {
-    mainClass.set("ParserKt")
+    mainClass.set("ConnectedSourceHostsKt")
 }

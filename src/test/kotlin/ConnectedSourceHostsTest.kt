@@ -3,16 +3,16 @@ import ch.tutteli.atrium.api.verbs.expect
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test
 
-class ParserTest {
+class ConnectedSourceHostsTest {
     @Nested
-    inner class ReadParsePrint {
+    inner class ReadFindPrint {
         @Test
         fun `source hosts by timestamp range`() {
             var hosts: Set<String>? = null
             val print: (Collection<String>) -> Unit = { hosts = it.toSet() }
             val fileName = javaClass.getResource("input-file-10000.txt").path
 
-            readParsePrint(
+            readFindPrint(
                 logFileName = fileName,
                 target = "Aaliayh",
                 from = 1565656607767,
