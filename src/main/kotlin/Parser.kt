@@ -2,25 +2,25 @@ import java.io.File
 
 fun main(args: Array<String>) {
     val logFileName = args[0]
-    val connectedTo = args[1]
+    val target = args[1]
     val from = args[2].toLong()
     val to = args[3].toLong()
 
-    readParsePrint(logFileName, connectedTo, from, to, ::println)
+    readParsePrint(logFileName, target, from, to, ::println)
 }
 
-fun readParsePrint(logFileName: String, connectedTo: String, from: Long, to: Long, onConnectedHosts: (Collection<String>) -> Unit) {
+fun readParsePrint(logFileName: String, target: String, from: Long, to: Long, onSourceHosts: (Collection<String>) -> Unit) {
     val hosts = read(logFileName) { lines ->
         val parsedLines = parse(lines)
-        findConnectedHosts(
+        findSourceHosts(
             lines = parsedLines,
-            connectedTo = Host(connectedTo),
+            target = Host(target),
             from = Timestamp(from),
             to = Timestamp(to)
         )
     }
 
-    onConnectedHosts(hosts.map(Host::name))
+    onSourceHosts(hosts.map(Host::name))
 }
 
 private fun <T> read(fileName: String, processLines: (Sequence<String>) -> T): T =
@@ -30,22 +30,22 @@ private fun parse(lines: Sequence<String>): Sequence<LogLine> =
     lines
         .filter(String::isNotBlank)
         .map { line ->
-            val (timestamp, connectedFrom, connectedTo) = line.split(" ")
-            LogLine(timestamp = Timestamp(timestamp.toLong()), connectedFrom = Host(connectedFrom), connectedTo = Host(connectedTo))
+            val (timestamp, source, target) = line.split(" ")
+            LogLine(timestamp = Timestamp(timestamp.toLong()), source = Host(source), target = Host(target))
         }
 
 inline class Host(val name: String)
 inline class Timestamp(val instant: Long)
-data class LogLine(val timestamp: Timestamp, val connectedFrom: Host, val connectedTo: Host)
+data class LogLine(val timestamp: Timestamp, val source: Host, val target: Host)
 
-fun findConnectedHosts(
+fun findSourceHosts(
     lines: Sequence<LogLine>,
-    connectedTo: Host,
+    target: Host,
     from: Timestamp,
     to: Timestamp
 ): Set<Host> = lines
-    .filter { (timestamp, _, lineConnectedTo) ->
-        lineConnectedTo == connectedTo && timestamp.instant >= from.instant && timestamp.instant <= to.instant
+    .filter { (timestamp, _, lineTarget) ->
+        lineTarget == target && timestamp.instant >= from.instant && timestamp.instant <= to.instant
     }
-    .map(LogLine::connectedFrom)
+    .map(LogLine::source)
     .toSet()

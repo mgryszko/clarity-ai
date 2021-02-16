@@ -7,17 +7,17 @@ class ParserTest {
     @Nested
     inner class ReadParsePrint {
         @Test
-        fun `connected hosts by timestamp range`() {
+        fun `source hosts by timestamp range`() {
             var hosts: Set<String>? = null
             val print: (Collection<String>) -> Unit = { hosts = it.toSet() }
             val fileName = javaClass.getResource("input-file-10000.txt").path
 
             readParsePrint(
                 logFileName = fileName,
-                connectedTo = "Aaliayh",
+                target = "Aaliayh",
                 from = 1565656607767,
                 to = 1565680778409,
-                onConnectedHosts = print
+                onSourceHosts = print
             )
 
             expect(hosts).toBe(
@@ -31,12 +31,12 @@ class ParserTest {
     }
 
     @Nested
-    inner class FindConnectedHosts {
+    inner class FindSourceHosts {
         @Test
         fun `exact timestamps`() {
-            val hosts = findConnectedHosts(
+            val hosts = findSourceHosts(
                 lines = lines,
-                connectedTo = Host("Aaliayh"),
+                target = Host("Aaliayh"),
                 from = Timestamp(1565656607767),
                 to = Timestamp(1565680778409)
             )
@@ -52,9 +52,9 @@ class ParserTest {
 
         @Test
         fun `timestamps expanded range by 1ms`() {
-            val hosts = findConnectedHosts(
+            val hosts = findSourceHosts(
                 lines = lines,
-                connectedTo = Host("Aaliayh"),
+                target = Host("Aaliayh"),
                 from = Timestamp(1565656607766),
                 to = Timestamp(1565680778410)
             )
@@ -70,9 +70,9 @@ class ParserTest {
 
         @Test
         fun `timestamps reduced range by 1ms`() {
-            val hosts = findConnectedHosts(
+            val hosts = findSourceHosts(
                 lines = lines,
-                connectedTo = Host("Aaliayh"),
+                target = Host("Aaliayh"),
                 from = Timestamp(1565656607768),
                 to = Timestamp(1565680778408)
             )
