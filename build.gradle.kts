@@ -36,6 +36,8 @@ dependencies {
 
 val kotlinOptions: KotlinJvmOptions.() -> Unit = {
     jvmTarget = "11"
+    freeCompilerArgs = listOf("-Xinline-classes")
+
 }
 val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions(kotlinOptions)
