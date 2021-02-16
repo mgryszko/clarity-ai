@@ -10,15 +10,22 @@ fun main(args: Array<String>) {
 }
 
 fun readParsePrint(logFileName: String, connectedTo: String, from: Long, to: Long, onConnectedHosts: (Collection<String>) -> Unit) {
-    val hosts = File(logFileName).useLines {
-        val parsedLines = it.map {
-            val (timestamp, connectedFrom, connectedTo) = it.split(" ")
-            LogLine(timestamp = Timestamp(timestamp.toLong()), connectedFrom = Host(connectedFrom), connectedTo = Host(connectedTo))
-        }
-        findConnectedHosts(lines = parsedLines, connectedTo = Host(connectedTo), from = Timestamp(from), to = Timestamp(to))
+    val hosts = File(logFileName).useLines { lines ->
+        val parsedLines = parse(lines)
+        findConnectedHosts(
+            lines = parsedLines,
+            connectedTo = Host(connectedTo),
+            from = Timestamp(from),
+            to = Timestamp(to)
+        )
     }
 
     onConnectedHosts(hosts.map(Host::name))
+}
+
+private fun parse(lines: Sequence<String>): Sequence<LogLine> = lines.map {
+    val (timestamp, connectedFrom, connectedTo) = it.split(" ")
+    LogLine(timestamp = Timestamp(timestamp.toLong()), connectedFrom = Host(connectedFrom), connectedTo = Host(connectedTo))
 }
 
 inline class Host(val name: String)
