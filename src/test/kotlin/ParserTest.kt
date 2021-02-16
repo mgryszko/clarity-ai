@@ -9,7 +9,7 @@ class ParserTest {
         @Test
         fun `exact timestamps`() {
             var hosts: Set<String>? = null
-            val print: (Set<String>) -> Unit = { hosts = it }
+            val print: (Collection<String>) -> Unit = { hosts = it.toSet() }
             val fileName = javaClass.getResource("input-file-10000.txt").path
 
             readParsePrint(
@@ -43,9 +43,9 @@ class ParserTest {
 
             expect(hosts).toBe(
                 setOf(
-                    "Shaquera",
-                    "Zidan",
-                    "Adalhi",
+                    Host("Shaquera"),
+                    Host("Zidan"),
+                    Host("Adalhi"),
                 )
             )
         }
@@ -61,9 +61,9 @@ class ParserTest {
 
             expect(hosts).toBe(
                 setOf(
-                    "Shaquera",
-                    "Zidan",
-                    "Adalhi",
+                    Host("Shaquera"),
+                    Host("Zidan"),
+                    Host("Adalhi"),
                 )
             )
         }
@@ -77,7 +77,7 @@ class ParserTest {
                 to = Timestamp(1565680778408)
             )
 
-            expect(hosts).toBe(setOf("Zidan"))
+            expect(hosts).toBe(setOf(Host("Zidan")))
         }
 
         val lines = sequenceOf(

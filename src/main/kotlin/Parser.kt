@@ -9,12 +9,12 @@ fun main(args : Array<String>) {
     readParsePrint(logFileName, connectedTo, from, to, ::println)
 }
 
-fun readParsePrint(logFileName: String, connectedTo: String, from: Long, to: Long, onConnectedHosts: (Set<String>) -> Unit) {
+fun readParsePrint(logFileName: String, connectedTo: String, from: Long, to: Long, onConnectedHosts: (Collection<String>) -> Unit) {
     val hosts = File(logFileName).useLines {
         parse(lines = it, connectedTo = Host(connectedTo), from = Timestamp(from), to = Timestamp(to))
     }
 
-    onConnectedHosts(hosts)
+    onConnectedHosts(hosts.map(Host::name))
 }
 
 inline class Host(val name: String)
@@ -25,10 +25,10 @@ fun parse(
     connectedTo: Host,
     from: Timestamp,
     to: Timestamp
-) = lines
+): Set<Host> = lines
     .filter {
         val (timestamp, _, host) = it.split(" ")
         host == connectedTo.name && timestamp.toLong() >= from.instant && timestamp.toLong() <= to.instant
     }
-    .map { it.split(" ")[1] }
+    .map { Host(it.split(" ")[1]) }
     .toSet()
