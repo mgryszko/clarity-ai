@@ -58,6 +58,14 @@ tasks.test {
     }
 }
 
-application {
+task("connectedHosts", JavaExec::class) {
+    classpath = sourceSets.main.get().runtimeClasspath
+
     mainClass.set("ConnectedSourceHostsKt")
+}
+
+task("periodicReport", JavaExec::class) {
+    classpath = sourceSets.main.get().runtimeClasspath
+
+    mainClass.set("WindowedReporterKt")
 }

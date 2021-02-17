@@ -1,5 +1,14 @@
 import java.io.File
 
+fun main(args: Array<String>) {
+    val logFileName = args[0]
+    val host = args[1]
+    val reportWindowMs = args[2].toLong()
+    val maxTolerableLagMs = args[3].toLong()
+
+    handleWindowedReport(logFileName, host, reportWindowMs, maxTolerableLagMs, ::println)
+}
+
 fun handleWindowedReport(
     logFileName: String,
     host: String,
