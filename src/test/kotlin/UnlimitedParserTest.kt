@@ -83,7 +83,7 @@ class UnlimitedParserTest {
                 nextWindowStart += reportInterval
             }
             if (it.timestamp.instant >= lastTimestamp - maxTolerableLag) {
-                if (it.target == target && it.timestamp.instant < nextWindowStart) {
+                if (it.target == target) {
                     hosts.add(it.source)
                 }
             }
