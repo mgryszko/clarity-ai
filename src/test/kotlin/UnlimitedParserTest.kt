@@ -65,6 +65,28 @@ class UnlimitedParserTest {
         )
     }
 
+    @Test
+    fun `no connected sources in window`() {
+        val hosts = connectedSourceHosts(
+            lines = sequenceOf(
+                LogLine(Timestamp(0), Host("omega"), Host("B")),
+                LogLine(Timestamp(999), Host("omega"), Host("B")),
+                LogLine(Timestamp(1000), Host("alpha"), Host("A")),
+            ),
+            target = Host("A"),
+            initialTimestamp = Timestamp(0),
+            reportInterval = 1000,
+            maxTolerableLag = 2,
+        )
+
+        expect(hosts).toBe(
+            listOf(
+                emptySet(),
+                setOf(Host("alpha")),
+            )
+        )
+    }
+
     private fun connectedSourceHosts(
         lines: Sequence<LogLine>,
         target: Host,
