@@ -66,7 +66,7 @@ class UnlimitedParserTest {
     }
 
     @Test
-    fun `no connected sources in window`() {
+    fun `no connected sources in a window`() {
         val hosts = connectedSourceHosts(
             lines = sequenceOf(
                 LogLine(Timestamp(0), Host("omega"), Host("B")),
@@ -76,13 +76,36 @@ class UnlimitedParserTest {
             target = Host("A"),
             initialTimestamp = Timestamp(0),
             reportInterval = 1000,
-            maxTolerableLag = 2,
+            maxTolerableLag = 0,
         )
 
         expect(hosts).toBe(
             listOf(
                 emptySet(),
                 setOf(Host("alpha")),
+            )
+        )
+    }
+
+    @Test
+    fun `no log lines in a window`() {
+        val hosts = connectedSourceHosts(
+            lines = sequenceOf(
+                LogLine(Timestamp(0), Host("alpha"), Host("A")),
+                LogLine(Timestamp(3000), Host("beta"), Host("A")),
+            ),
+            target = Host("A"),
+            initialTimestamp = Timestamp(0),
+            reportInterval = 1000,
+            maxTolerableLag = 2,
+        )
+
+        expect(hosts).toBe(
+            listOf(
+                setOf(Host("alpha")),
+                emptySet(),
+                emptySet(),
+                setOf(Host("beta")),
             )
         )
     }
@@ -102,6 +125,11 @@ class UnlimitedParserTest {
             if (it.timestamp.instant >= nextWindowStart) {
                 reports.add(hosts.toSet())
                 hosts.clear()
+                if (it.timestamp.instant / nextWindowStart > 1) {
+                    repeat((it.timestamp.instant / nextWindowStart).toInt() - 1) {
+                        reports.add(emptySet())
+                    }
+                }
                 nextWindowStart += reportInterval
             }
             if (it.timestamp.instant >= timestampHighWatermark - maxTolerableLag) {
