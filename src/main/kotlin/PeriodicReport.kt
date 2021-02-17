@@ -20,7 +20,7 @@ fun handlePeriodicReport(
         val parsedLines = parse(lines)
         connectedSourceHosts(
             lines = parsedLines,
-            target = Host(host),
+            host = Host(host),
             initialTimestamp = firstLine(logFileName).timestamp,
             reportPeriod = Duration(reportPeriodMs),
             maxTolerableLag = Duration(maxTolerableLagMs),
@@ -48,7 +48,7 @@ private fun parse(line: String): LogLine {
 
 fun connectedSourceHosts(
     lines: Sequence<LogLine>,
-    target: Host,
+    host: Host,
     initialTimestamp: Timestamp,
     reportPeriod: Duration,
     maxTolerableLag: Duration,
@@ -57,7 +57,7 @@ fun connectedSourceHosts(
     val reports = mutableListOf<Set<Host>>()
     var nextReportTimestamp = initialTimestamp + reportPeriod
     var timestampHighWatermark = initialTimestamp
-    lines.forEach { (timestamp, source, lineTarget) ->
+    lines.forEach { (timestamp, source, target) ->
         if (timestamp >= nextReportTimestamp) {
             reports.add(hosts.toSet())
             hosts.clear()
@@ -69,7 +69,7 @@ fun connectedSourceHosts(
             nextReportTimestamp += reportPeriod
         }
         if (timestamp >= timestampHighWatermark - maxTolerableLag) {
-            if (lineTarget == target) {
+            if (target == host) {
                 hosts.add(source)
             }
         }
