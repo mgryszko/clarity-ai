@@ -9,10 +9,10 @@ class PeriodicReportTest {
         val print: (List<List<String>>) -> Unit = { hosts = it }
         val fileName = javaClass.getResource("input-file-10000.txt").path
 
-        handleWindowedReport(
+        handlePeriodicReport(
             logFileName = fileName,
             host = "Aaliayh",
-            reportWindowMs = 60 * 60 * 1000,
+            reportPeriodMs = 60 * 60 * 1000,
             maxTolerableLagMs = 5 * 60 * 1000,
             onReports = print
         )
@@ -48,12 +48,12 @@ class PeriodicReportTest {
     }
 
     @Test
-    fun `connected sources in all windows`() {
+    fun `connected sources in all report periods`() {
         val hosts = connectedSourceHosts(
             lines = lines,
             target = Host("Aadison"),
             initialTimestamp = Timestamp(0),
-            reportWindow = Duration(1000),
+            reportPeriod = Duration(1000),
             maxTolerableLag = Duration(0),
         )
 
@@ -90,7 +90,7 @@ class PeriodicReportTest {
             ),
             target = Host("A"),
             initialTimestamp = Timestamp(0),
-            reportWindow = Duration(1000),
+            reportPeriod = Duration(1000),
             maxTolerableLag = Duration(0),
         )
 
@@ -112,7 +112,7 @@ class PeriodicReportTest {
             ),
             target = Host("A"),
             initialTimestamp = Timestamp(0),
-            reportWindow = Duration(500),
+            reportPeriod = Duration(500),
             maxTolerableLag = Duration(2),
         )
 
@@ -128,7 +128,7 @@ class PeriodicReportTest {
     }
 
     @Test
-    fun `no connected sources in a window`() {
+    fun `no connected sources in reporting period`() {
         val hosts = connectedSourceHosts(
             lines = sequenceOf(
                 LogLine(Timestamp(0), Host("omega"), Host("B")),
@@ -137,7 +137,7 @@ class PeriodicReportTest {
             ),
             target = Host("A"),
             initialTimestamp = Timestamp(0),
-            reportWindow = Duration(1000),
+            reportPeriod = Duration(1000),
             maxTolerableLag = Duration(0),
         )
 
@@ -150,7 +150,7 @@ class PeriodicReportTest {
     }
 
     @Test
-    fun `no log lines in a window`() {
+    fun `no log lines in report periods`() {
         val hosts = connectedSourceHosts(
             lines = sequenceOf(
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
@@ -158,7 +158,7 @@ class PeriodicReportTest {
             ),
             target = Host("A"),
             initialTimestamp = Timestamp(0),
-            reportWindow = Duration(1000),
+            reportPeriod = Duration(1000),
             maxTolerableLag = Duration(2),
         )
 
@@ -182,7 +182,7 @@ class PeriodicReportTest {
             ),
             target = Host("A"),
             initialTimestamp = Timestamp(2),
-            reportWindow = Duration(1000),
+            reportPeriod = Duration(1000),
             maxTolerableLag = Duration(0),
         )
 

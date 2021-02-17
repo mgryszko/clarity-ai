@@ -3,16 +3,16 @@ import java.io.File
 fun main(args: Array<String>) {
     val logFileName = args[0]
     val host = args[1]
-    val reportWindowMs = args[2].toLong()
+    val reportPeriodMs = args[2].toLong()
     val maxTolerableLagMs = args[3].toLong()
 
-    handleWindowedReport(logFileName, host, reportWindowMs, maxTolerableLagMs, ::println)
+    handlePeriodicReport(logFileName, host, reportPeriodMs, maxTolerableLagMs, ::println)
 }
 
-fun handleWindowedReport(
+fun handlePeriodicReport(
     logFileName: String,
     host: String,
-    reportWindowMs: Long,
+    reportPeriodMs: Long,
     maxTolerableLagMs: Long,
     onReports: (List<List<String>>) -> Unit
 ) {
@@ -22,7 +22,7 @@ fun handleWindowedReport(
             lines = parsedLines,
             target = Host(host),
             initialTimestamp = firstLine(logFileName).timestamp,
-            reportWindow = Duration(reportWindowMs),
+            reportPeriod = Duration(reportPeriodMs),
             maxTolerableLag = Duration(maxTolerableLagMs),
         )
     }
@@ -50,23 +50,23 @@ fun connectedSourceHosts(
     lines: Sequence<LogLine>,
     target: Host,
     initialTimestamp: Timestamp,
-    reportWindow: Duration,
+    reportPeriod: Duration,
     maxTolerableLag: Duration,
 ): List<Set<Host>> {
     val hosts = mutableSetOf<Host>()
     val reports = mutableListOf<Set<Host>>()
-    var nextWindow = initialTimestamp + reportWindow
+    var nextReportTimestamp = initialTimestamp + reportPeriod
     var timestampHighWatermark = initialTimestamp
     lines.forEach { (timestamp, source, lineTarget) ->
-        if (timestamp >= nextWindow) {
+        if (timestamp >= nextReportTimestamp) {
             reports.add(hosts.toSet())
             hosts.clear()
-            if (timestamp / nextWindow > 1) {
-                repeat((timestamp / nextWindow).toInt() - 1) {
+            if (timestamp / nextReportTimestamp > 1) {
+                repeat((timestamp / nextReportTimestamp).toInt() - 1) {
                     reports.add(emptySet())
                 }
             }
-            nextWindow += reportWindow
+            nextReportTimestamp += reportPeriod
         }
         if (timestamp >= timestampHighWatermark - maxTolerableLag) {
             if (lineTarget == target) {
