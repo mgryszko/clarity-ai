@@ -14,7 +14,7 @@ fun handlePeriodicReports(
     host: String,
     reportPeriodMs: Long,
     maxTolerableLagMs: Long,
-    onReports: (List<List<String>>) -> Unit
+    onReports: (List<Set<Host>>) -> Unit
 ) {
     val reports = read(logFileName) { lines ->
         val parsedLines = parse(lines)
@@ -27,7 +27,7 @@ fun handlePeriodicReports(
         )
     }
 
-    onReports(reports.map { it.map(Host::name) })
+    onReports(reports)
 }
 
 private fun <T> read(fileName: String, processLines: (Sequence<String>) -> T): T =

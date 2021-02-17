@@ -8,8 +8,8 @@ class ConnectedSourceHostsTest {
     inner class ReadFindPrint {
         @Test
         fun `source hosts by timestamp range`() {
-            var hosts: Set<String>? = null
-            val print: (Collection<String>) -> Unit = { hosts = it.toSet() }
+            var hosts: Set<Host>? = null
+            val print: (Set<Host>) -> Unit = { hosts = it }
             val fileName = javaClass.getResource("input-file-10000.txt").path
 
             handleConnectedSourceHost(
@@ -22,9 +22,9 @@ class ConnectedSourceHostsTest {
 
             expect(hosts).toBe(
                 setOf(
-                    "Shaquera",
-                    "Zidan",
-                    "Adalhi",
+                    Host("Shaquera"),
+                    Host("Zidan"),
+                    Host("Adalhi"),
                 )
             )
         }

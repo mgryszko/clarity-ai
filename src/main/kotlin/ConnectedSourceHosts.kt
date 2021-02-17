@@ -9,7 +9,7 @@ fun main(args: Array<String>) {
     handleConnectedSourceHost(logFileName, target, fromMs, toMs, ::println)
 }
 
-fun handleConnectedSourceHost(logFileName: String, target: String, fromMs: Long, toMs: Long, onSourceHosts: (Collection<String>) -> Unit) {
+fun handleConnectedSourceHost(logFileName: String, target: String, fromMs: Long, toMs: Long, onSourceHosts: (Set<Host>) -> Unit) {
     val hosts = read(logFileName) { lines ->
         val parsedLines = parse(lines)
         findSourceHosts(
@@ -20,7 +20,7 @@ fun handleConnectedSourceHost(logFileName: String, target: String, fromMs: Long,
         )
     }
 
-    onSourceHosts(hosts.map(Host::name))
+    onSourceHosts(hosts)
 }
 
 private fun <T> read(fileName: String, processLines: (Sequence<String>) -> T): T =

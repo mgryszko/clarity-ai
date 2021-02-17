@@ -5,8 +5,8 @@ import kotlin.test.Test
 class PeriodicReportTest {
     @Test
     fun `connected source hosts - integration`() {
-        var hosts: List<List<String>>? = null
-        val print: (List<List<String>>) -> Unit = { hosts = it }
+        var hosts: List<Set<Host>>? = null
+        val print: (List<Set<Host>>) -> Unit = { hosts = it }
         val fileName = javaClass.getResource("input-file-10000.txt").path
 
         handlePeriodicReports(
@@ -19,30 +19,30 @@ class PeriodicReportTest {
 
         expect(hosts).toBe(
             listOf(
-                emptyList(),
-                listOf("Dayonte"),
-                listOf("Shaquera"),
-                emptyList(),
-                emptyList(),
-                emptyList(),
-                listOf("Zidan"),
-                emptyList(),
-                emptyList(),
-                listOf("Adalhi", "Terryn"),
-                listOf("Kyus"),
-                listOf("Taison"),
-                emptyList(),
-                emptyList(),
-                listOf("Cliff"),
-                emptyList(),
-                emptyList(),
-                emptyList(),
-                emptyList(),
-                listOf("Ivy"),
-                emptyList(),
-                listOf("Azarel"),
-                emptyList(),
-                emptyList(),
+                emptySet(),
+                setOf(Host("Dayonte")),
+                setOf(Host("Shaquera")),
+                emptySet(),
+                emptySet(),
+                emptySet(),
+                setOf(Host("Zidan")),
+                emptySet(),
+                emptySet(),
+                setOf(Host("Adalhi"), Host("Terryn")),
+                setOf(Host("Kyus")),
+                setOf(Host("Taison")),
+                emptySet(),
+                emptySet(),
+                setOf(Host("Cliff")),
+                emptySet(),
+                emptySet(),
+                emptySet(),
+                emptySet(),
+                setOf(Host("Ivy")),
+                emptySet(),
+                setOf(Host("Azarel")),
+                emptySet(),
+                emptySet(),
             )
         )
     }
