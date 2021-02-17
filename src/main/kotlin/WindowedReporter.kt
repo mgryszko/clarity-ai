@@ -1,3 +1,42 @@
+import java.io.File
+
+fun handleWindowedReport(
+    logFileName: String,
+    host: String,
+    reportWindowMs: Long,
+    maxTolerableLagMs: Long,
+    onReports: (List<List<String>>) -> Unit
+) {
+    val reports = read(logFileName) { lines ->
+        val parsedLines = parse(lines)
+        connectedSourceHosts(
+            lines = parsedLines,
+            target = Host(host),
+            initialTimestamp = firstLine(logFileName).timestamp,
+            reportWindow = Duration(reportWindowMs),
+            maxTolerableLag = Duration(maxTolerableLagMs),
+        )
+    }
+
+    onReports(reports.map { it.map(Host::name) })
+}
+
+fun firstLine(logFileName: String): LogLine {
+    val line = File(logFileName).useLines { it.first() }
+    return parse(line)
+}
+
+private fun <T> read(fileName: String, processLines: (Sequence<String>) -> T): T =
+    File(fileName).useLines(Charsets.UTF_8, processLines)
+
+private fun parse(lines: Sequence<String>): Sequence<LogLine> =
+    lines.filter(String::isNotBlank).map(::parse)
+
+private fun parse(line: String): LogLine {
+    val (timestamp, source, target) = line.split(" ")
+    return LogLine(timestamp = Timestamp(timestamp.toLong()), source = Host(source), target = Host(target))
+}
+
 fun connectedSourceHosts(
     lines: Sequence<LogLine>,
     target: Host,

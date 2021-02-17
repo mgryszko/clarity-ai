@@ -4,6 +4,50 @@ import kotlin.test.Test
 
 class WindowedReporterTest {
     @Test
+    fun `connected source hosts - integration`() {
+        var hosts: List<List<String>>? = null
+        val print: (List<List<String>>) -> Unit = { hosts = it }
+        val fileName = javaClass.getResource("input-file-10000.txt").path
+
+        handleWindowedReport(
+            logFileName = fileName,
+            host = "Aaliayh",
+            reportWindowMs = 60 * 60 * 1000,
+            maxTolerableLagMs = 5 * 60 * 1000,
+            onReports = print
+        )
+
+        expect(hosts).toBe(
+            listOf(
+                emptyList(),
+                listOf("Dayonte"),
+                listOf("Shaquera"),
+                emptyList(),
+                emptyList(),
+                emptyList(),
+                listOf("Zidan"),
+                emptyList(),
+                emptyList(),
+                listOf("Adalhi", "Terryn"),
+                listOf("Kyus"),
+                listOf("Taison"),
+                emptyList(),
+                emptyList(),
+                listOf("Cliff"),
+                emptyList(),
+                emptyList(),
+                emptyList(),
+                emptyList(),
+                listOf("Ivy"),
+                emptyList(),
+                listOf("Azarel"),
+                emptyList(),
+                emptyList(),
+            )
+        )
+    }
+
+    @Test
     fun `connected sources in all windows`() {
         val hosts = connectedSourceHosts(
             lines = lines,
