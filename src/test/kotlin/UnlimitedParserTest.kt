@@ -128,6 +128,23 @@ class UnlimitedParserTest {
         )
     }
 
+    @Test
+    fun `log lines before initial timestamp`() {
+        val hosts = connectedSourceHosts(
+            lines = sequenceOf(
+                LogLine(Timestamp(0), Host("alpha"), Host("A")),
+                LogLine(Timestamp(1), Host("omega"), Host("B")),
+                LogLine(Timestamp(2), Host("beta"), Host("A")),
+            ),
+            target = Host("A"),
+            initialTimestamp = Timestamp(2),
+            reportInterval = 1000,
+            maxTolerableLag = 0,
+        )
+
+        expect(hosts).toBe(listOf(setOf(Host("beta"))))
+    }
+
     private fun connectedSourceHosts(
         lines: Sequence<LogLine>,
         target: Host,
