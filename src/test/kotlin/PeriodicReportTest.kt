@@ -2,7 +2,7 @@ import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import kotlin.test.Test
 
-class WindowedReporterTest {
+class PeriodicReportTest {
     @Test
     fun `connected source hosts - integration`() {
         var hosts: List<List<String>>? = null

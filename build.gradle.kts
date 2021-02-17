@@ -67,5 +67,5 @@ task("connectedHosts", JavaExec::class) {
 task("periodicReport", JavaExec::class) {
     classpath = sourceSets.main.get().runtimeClasspath
 
-    mainClass.set("WindowedReporterKt")
+    mainClass.set("PeriodicReportKt")
 }
