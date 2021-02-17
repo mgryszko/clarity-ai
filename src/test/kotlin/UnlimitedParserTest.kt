@@ -156,24 +156,24 @@ class UnlimitedParserTest {
         val reports = mutableListOf<Set<Host>>()
         var nextWindow = initialTimestamp + reportWindow
         var timestampHighWatermark = initialTimestamp
-        lines.forEach {
-            if (it.timestamp >= nextWindow) {
+        lines.forEach { (timestamp, source, lineTarget) ->
+            if (timestamp >= nextWindow) {
                 reports.add(hosts.toSet())
                 hosts.clear()
-                if (it.timestamp / nextWindow > 1) {
-                    repeat((it.timestamp / nextWindow).toInt() - 1) {
+                if (timestamp / nextWindow > 1) {
+                    repeat((timestamp / nextWindow).toInt() - 1) {
                         reports.add(emptySet())
                     }
                 }
                 nextWindow += reportWindow
             }
-            if (it.timestamp >= timestampHighWatermark - maxTolerableLag) {
-                if (it.target == target) {
-                    hosts.add(it.source)
+            if (timestamp >= timestampHighWatermark - maxTolerableLag) {
+                if (lineTarget == target) {
+                    hosts.add(source)
                 }
             }
-            if (it.timestamp > timestampHighWatermark) {
-                timestampHighWatermark = it.timestamp
+            if (timestamp > timestampHighWatermark) {
+                timestampHighWatermark = timestamp
             }
         }
         reports.add(hosts.toSet())
