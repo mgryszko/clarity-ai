@@ -35,7 +35,13 @@ private fun parse(lines: Sequence<String>): Sequence<LogLine> =
         }
 
 inline class Host(val name: String)
-inline class Timestamp(val instant: Long)
+inline class Timestamp(val instant: Long) {
+    operator fun plus(duration: Duration): Timestamp = Timestamp(instant + duration.ms)
+    operator fun div(other: Timestamp): Long = instant / other.instant
+    operator fun compareTo(other: Timestamp): Int = instant.compareTo(other.instant)
+    operator fun minus(other: Duration): Timestamp = Timestamp(instant - other.ms)
+}
+inline class Duration(val ms: Long)
 data class LogLine(val timestamp: Timestamp, val source: Host, val target: Host)
 
 fun findSourceHosts(
@@ -45,7 +51,7 @@ fun findSourceHosts(
     to: Timestamp
 ): Set<Host> = lines
     .filter { (timestamp, _, lineTarget) ->
-        lineTarget == target && timestamp.instant >= from.instant && timestamp.instant <= to.instant
+        lineTarget == target && timestamp >= from && timestamp <= to
     }
     .map(LogLine::source)
     .toSet()

@@ -9,8 +9,8 @@ class UnlimitedParserTest {
             lines = lines,
             target = Host("Aadison"),
             initialTimestamp = Timestamp(0),
-            reportWindow = 1000,
-            maxTolerableLag = 0,
+            reportWindow = Duration(1000),
+            maxTolerableLag = Duration(0),
         )
 
         expect(hosts).toBe(
@@ -46,8 +46,8 @@ class UnlimitedParserTest {
             ),
             target = Host("A"),
             initialTimestamp = Timestamp(0),
-            reportWindow = 1000,
-            maxTolerableLag = 0,
+            reportWindow = Duration(1000),
+            maxTolerableLag = Duration(0),
         )
 
         expect(hosts).toBe(listOf(setOf(Host("alpha"), Host("beta"))))
@@ -68,8 +68,8 @@ class UnlimitedParserTest {
             ),
             target = Host("A"),
             initialTimestamp = Timestamp(0),
-            reportWindow = 500,
-            maxTolerableLag = 2,
+            reportWindow = Duration(500),
+            maxTolerableLag = Duration(2),
         )
 
         expect(hosts).toBe(
@@ -93,8 +93,8 @@ class UnlimitedParserTest {
             ),
             target = Host("A"),
             initialTimestamp = Timestamp(0),
-            reportWindow = 1000,
-            maxTolerableLag = 0,
+            reportWindow = Duration(1000),
+            maxTolerableLag = Duration(0),
         )
 
         expect(hosts).toBe(
@@ -114,8 +114,8 @@ class UnlimitedParserTest {
             ),
             target = Host("A"),
             initialTimestamp = Timestamp(0),
-            reportWindow = 1000,
-            maxTolerableLag = 2,
+            reportWindow = Duration(1000),
+            maxTolerableLag = Duration(2),
         )
 
         expect(hosts).toBe(
@@ -138,8 +138,8 @@ class UnlimitedParserTest {
             ),
             target = Host("A"),
             initialTimestamp = Timestamp(2),
-            reportWindow = 1000,
-            maxTolerableLag = 0,
+            reportWindow = Duration(1000),
+            maxTolerableLag = Duration(0),
         )
 
         expect(hosts).toBe(listOf(setOf(Host("beta"))))
@@ -149,31 +149,31 @@ class UnlimitedParserTest {
         lines: Sequence<LogLine>,
         target: Host,
         initialTimestamp: Timestamp,
-        reportWindow: Long,
-        maxTolerableLag: Long
+        reportWindow: Duration,
+        maxTolerableLag: Duration,
     ): List<Set<Host>> {
         val hosts = mutableSetOf<Host>()
         val reports = mutableListOf<Set<Host>>()
-        var nextWindow = initialTimestamp.instant + reportWindow
-        var timestampHighWatermark = initialTimestamp.instant
+        var nextWindow = initialTimestamp + reportWindow
+        var timestampHighWatermark = initialTimestamp
         lines.forEach {
-            if (it.timestamp.instant >= nextWindow) {
+            if (it.timestamp >= nextWindow) {
                 reports.add(hosts.toSet())
                 hosts.clear()
-                if (it.timestamp.instant / nextWindow > 1) {
-                    repeat((it.timestamp.instant / nextWindow).toInt() - 1) {
+                if (it.timestamp / nextWindow > 1) {
+                    repeat((it.timestamp / nextWindow).toInt() - 1) {
                         reports.add(emptySet())
                     }
                 }
                 nextWindow += reportWindow
             }
-            if (it.timestamp.instant >= timestampHighWatermark - maxTolerableLag) {
+            if (it.timestamp >= timestampHighWatermark - maxTolerableLag) {
                 if (it.target == target) {
                     hosts.add(it.source)
                 }
             }
-            if (it.timestamp.instant > timestampHighWatermark) {
-                timestampHighWatermark = it.timestamp.instant
+            if (it.timestamp > timestampHighWatermark) {
+                timestampHighWatermark = it.timestamp
             }
         }
         reports.add(hosts.toSet())
