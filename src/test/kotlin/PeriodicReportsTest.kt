@@ -2,15 +2,15 @@ import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import kotlin.test.Test
 
-class PeriodicReportsTest {
+class HandlePeriodicReportsTest {
     @Test
-    fun `connected source hosts - integration`() {
+    fun `log from file, spying connected host obsrver`() {
         var hosts: List<Set<Host>>? = null
         val print: (List<Set<Host>>) -> Unit = { hosts = it }
-        val fileName = javaClass.getResource("input-file-10000.txt").path
+        val logFileName = javaClass.getResource("input-file-10000.txt").path
 
         handlePeriodicReports(
-            logFileName = fileName,
+            logFileName = logFileName,
             host = "Aaliayh",
             reportPeriodMs = 60 * 60 * 1000,
             maxTolerableLagMs = 5 * 60 * 1000,
@@ -46,7 +46,9 @@ class PeriodicReportsTest {
             )
         )
     }
+}
 
+class PeriodicReportsTest {
     @Test
     fun `connected sources in all report periods`() {
         val hosts = generatePeriodicReports(
