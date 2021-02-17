@@ -6,10 +6,10 @@ fun main(args: Array<String>) {
     val reportPeriodMs = args[2].toLong()
     val maxTolerableLagMs = args[3].toLong()
 
-    handlePeriodicReport(logFileName, host, reportPeriodMs, maxTolerableLagMs, ::println)
+    handlePeriodicReports(logFileName, host, reportPeriodMs, maxTolerableLagMs, ::println)
 }
 
-fun handlePeriodicReport(
+fun handlePeriodicReports(
     logFileName: String,
     host: String,
     reportPeriodMs: Long,

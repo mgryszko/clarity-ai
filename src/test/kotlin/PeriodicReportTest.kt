@@ -9,7 +9,7 @@ class PeriodicReportTest {
         val print: (List<List<String>>) -> Unit = { hosts = it }
         val fileName = javaClass.getResource("input-file-10000.txt").path
 
-        handlePeriodicReport(
+        handlePeriodicReports(
             logFileName = fileName,
             host = "Aaliayh",
             reportPeriodMs = 60 * 60 * 1000,
