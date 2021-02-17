@@ -6,10 +6,10 @@ fun main(args: Array<String>) {
     val from = args[2].toLong()
     val to = args[3].toLong()
 
-    readFindPrint(logFileName, target, from, to, ::println)
+    handleConnectedSourceHost(logFileName, target, from, to, ::println)
 }
 
-fun readFindPrint(logFileName: String, target: String, from: Long, to: Long, onSourceHosts: (Collection<String>) -> Unit) {
+fun handleConnectedSourceHost(logFileName: String, target: String, from: Long, to: Long, onSourceHosts: (Collection<String>) -> Unit) {
     val hosts = read(logFileName) { lines ->
         val parsedLines = parse(lines)
         findSourceHosts(
