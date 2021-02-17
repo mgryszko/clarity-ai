@@ -8,7 +8,7 @@ class UnlimitedParserTest {
         val hosts = connectedSourceHosts(
             lines = lines,
             target = Host("Aadison"),
-            initialInterval = Timestamp(0),
+            initialTimestamp = Timestamp(0),
             reportInterval = 1000,
             maxTolerableLag = 2,
         )
@@ -49,7 +49,7 @@ class UnlimitedParserTest {
                 LogLine(Timestamp(397), Host("::"), Host("A")),
             ),
             target = Host("A"),
-            initialInterval = Timestamp(0),
+            initialTimestamp = Timestamp(0),
             reportInterval = 500,
             maxTolerableLag = 2,
         )
@@ -68,14 +68,14 @@ class UnlimitedParserTest {
     private fun connectedSourceHosts(
         lines: Sequence<LogLine>,
         target: Host,
-        initialInterval: Timestamp,
+        initialTimestamp: Timestamp,
         reportInterval: Long,
         maxTolerableLag: Long
     ): List<Set<Host>> {
         val hosts = mutableSetOf<Host>()
         val reports = mutableListOf<Set<Host>>()
-        var nextWindowStart = initialInterval.instant + reportInterval
-        var lastTimestamp = initialInterval.instant
+        var nextWindowStart = initialTimestamp.instant + reportInterval
+        var lastTimestamp = initialTimestamp.instant
         lines.forEach {
             if (it.timestamp.instant >= nextWindowStart) {
                 reports.add(hosts.toSet())
