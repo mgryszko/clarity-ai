@@ -9,7 +9,7 @@ class UnlimitedParserTest {
             lines = lines,
             target = Host("Aadison"),
             initialTimestamp = Timestamp(0),
-            reportInterval = 1000,
+            reportWindow = 1000,
             maxTolerableLag = 0,
         )
 
@@ -46,7 +46,7 @@ class UnlimitedParserTest {
             ),
             target = Host("A"),
             initialTimestamp = Timestamp(0),
-            reportInterval = 1000,
+            reportWindow = 1000,
             maxTolerableLag = 0,
         )
 
@@ -68,7 +68,7 @@ class UnlimitedParserTest {
             ),
             target = Host("A"),
             initialTimestamp = Timestamp(0),
-            reportInterval = 500,
+            reportWindow = 500,
             maxTolerableLag = 2,
         )
 
@@ -93,7 +93,7 @@ class UnlimitedParserTest {
             ),
             target = Host("A"),
             initialTimestamp = Timestamp(0),
-            reportInterval = 1000,
+            reportWindow = 1000,
             maxTolerableLag = 0,
         )
 
@@ -114,7 +114,7 @@ class UnlimitedParserTest {
             ),
             target = Host("A"),
             initialTimestamp = Timestamp(0),
-            reportInterval = 1000,
+            reportWindow = 1000,
             maxTolerableLag = 2,
         )
 
@@ -138,7 +138,7 @@ class UnlimitedParserTest {
             ),
             target = Host("A"),
             initialTimestamp = Timestamp(2),
-            reportInterval = 1000,
+            reportWindow = 1000,
             maxTolerableLag = 0,
         )
 
@@ -149,23 +149,23 @@ class UnlimitedParserTest {
         lines: Sequence<LogLine>,
         target: Host,
         initialTimestamp: Timestamp,
-        reportInterval: Long,
+        reportWindow: Long,
         maxTolerableLag: Long
     ): List<Set<Host>> {
         val hosts = mutableSetOf<Host>()
         val reports = mutableListOf<Set<Host>>()
-        var nextWindowStart = initialTimestamp.instant + reportInterval
+        var nextWindow = initialTimestamp.instant + reportWindow
         var timestampHighWatermark = initialTimestamp.instant
         lines.forEach {
-            if (it.timestamp.instant >= nextWindowStart) {
+            if (it.timestamp.instant >= nextWindow) {
                 reports.add(hosts.toSet())
                 hosts.clear()
-                if (it.timestamp.instant / nextWindowStart > 1) {
-                    repeat((it.timestamp.instant / nextWindowStart).toInt() - 1) {
+                if (it.timestamp.instant / nextWindow > 1) {
+                    repeat((it.timestamp.instant / nextWindow).toInt() - 1) {
                         reports.add(emptySet())
                     }
                 }
-                nextWindowStart += reportInterval
+                nextWindow += reportWindow
             }
             if (it.timestamp.instant >= timestampHighWatermark - maxTolerableLag) {
                 if (it.target == target) {
