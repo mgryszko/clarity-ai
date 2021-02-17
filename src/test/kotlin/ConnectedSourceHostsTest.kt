@@ -80,6 +80,23 @@ class ConnectedSourceHostsTest {
             expect(hosts).toBe(setOf(Host("Zidan")))
         }
 
+        @Test
+        fun `repeated source hosts`() {
+            val hosts = findSourceHosts(
+                lines = sequenceOf(
+                    LogLine(Timestamp(0), Host("alpha"), Host("A")),
+                    LogLine(Timestamp(0), Host("alpha"), Host("A")),
+                    LogLine(Timestamp(0), Host("alpha"), Host("A")),
+                    LogLine(Timestamp(0), Host("beta"), Host("A")),
+                ),
+                target = Host("A"),
+                from = Timestamp(0),
+                to = Timestamp(0)
+            )
+
+            expect(hosts).toBe(setOf(Host("alpha"), Host("beta")))
+        }
+
         val lines = sequenceOf(
             LogLine(Timestamp(1565648096156), Host("Dristen"), Host("Aadison")),
             LogLine(Timestamp(1565648978434), Host("Glorimar"), Host("Aadison")),

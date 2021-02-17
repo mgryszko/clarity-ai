@@ -10,7 +10,7 @@ class UnlimitedParserTest {
             target = Host("Aadison"),
             initialTimestamp = Timestamp(0),
             reportInterval = 1000,
-            maxTolerableLag = 2,
+            maxTolerableLag = 0,
         )
 
         expect(hosts).toBe(
@@ -33,6 +33,24 @@ class UnlimitedParserTest {
                 ),
             )
         )
+    }
+
+    @Test
+    fun `repeated source hosts`() {
+        val hosts = connectedSourceHosts(
+            lines = sequenceOf(
+                LogLine(Timestamp(0), Host("alpha"), Host("A")),
+                LogLine(Timestamp(0), Host("alpha"), Host("A")),
+                LogLine(Timestamp(0), Host("alpha"), Host("A")),
+                LogLine(Timestamp(0), Host("beta"), Host("A")),
+            ),
+            target = Host("A"),
+            initialTimestamp = Timestamp(0),
+            reportInterval = 1000,
+            maxTolerableLag = 0,
+        )
+
+        expect(hosts).toBe(listOf(setOf(Host("alpha"), Host("beta"))))
     }
 
     @Test
@@ -171,5 +189,6 @@ class UnlimitedParserTest {
         LogLine(Timestamp(2900), Host("Evelyse"), Host("Aadison")),
         LogLine(Timestamp(3000), Host("Nathanael"), Host("Aadison")),
         LogLine(Timestamp(3300), Host("Ricquan"), Host("Aadison")),
-        LogLine(Timestamp(3500), Host("Adalhi"), Host("Aaliayh")),    )
+        LogLine(Timestamp(3500), Host("Adalhi"), Host("Aaliayh")),
+    )
 }
