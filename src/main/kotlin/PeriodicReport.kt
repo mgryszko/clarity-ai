@@ -41,11 +41,6 @@ private fun firstLine(logFileName: String): LogLine {
 private fun parse(lines: Sequence<String>): Sequence<LogLine> =
     lines.filter(String::isNotBlank).map(::parse)
 
-private fun parse(line: String): LogLine {
-    val (timestamp, source, target) = line.split(" ")
-    return LogLine(timestamp = Timestamp(timestamp.toLong()), source = Host(source), target = Host(target))
-}
-
 fun generatePeriodicReports(
     lines: Sequence<LogLine>,
     host: Host,

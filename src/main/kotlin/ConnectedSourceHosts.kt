@@ -27,12 +27,7 @@ private fun <T> read(fileName: String, processLines: (Sequence<String>) -> T): T
     File(fileName).useLines(Charsets.UTF_8, processLines)
 
 private fun parse(lines: Sequence<String>): Sequence<LogLine> =
-    lines
-        .filter(String::isNotBlank)
-        .map { line ->
-            val (timestamp, source, target) = line.split(" ")
-            LogLine(timestamp = Timestamp(timestamp.toLong()), source = Host(source), target = Host(target))
-        }
+    lines.filter(String::isNotBlank).map(::parse)
 
 fun findSourceHosts(
     lines: Sequence<LogLine>,
