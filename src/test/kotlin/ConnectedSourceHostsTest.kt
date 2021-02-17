@@ -1,4 +1,5 @@
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.fluent.en_GB.notToBeNull
 import ch.tutteli.atrium.api.verbs.expect
 import kotlin.test.Test
 
@@ -17,7 +18,11 @@ class HandleConnectedSourceHostsTest {
             onSourceHosts = print
         )
 
-        expect(hosts).toBe(setOf(Host("Shaquera"), Host("Zidan"), Host("Adalhi")))
+        expect(hosts).notToBeNull().containsExactly(
+            Host("Shaquera"),
+            Host("Zidan"),
+            Host("Adalhi"),
+        )
     }
 }
 
@@ -31,12 +36,10 @@ class FindSourceHostsTest {
             to = Timestamp(1565680778409)
         )
 
-        expect(hosts).toBe(
-            setOf(
-                Host("Shaquera"),
-                Host("Zidan"),
-                Host("Adalhi"),
-            )
+        expect(hosts).containsExactly(
+            Host("Shaquera"),
+            Host("Zidan"),
+            Host("Adalhi"),
         )
     }
 
@@ -49,12 +52,10 @@ class FindSourceHostsTest {
             to = Timestamp(1565680778410)
         )
 
-        expect(hosts).toBe(
-            setOf(
-                Host("Shaquera"),
-                Host("Zidan"),
-                Host("Adalhi"),
-            )
+        expect(hosts).containsExactly(
+            Host("Shaquera"),
+            Host("Zidan"),
+            Host("Adalhi"),
         )
     }
 
@@ -67,7 +68,7 @@ class FindSourceHostsTest {
             to = Timestamp(1565680778408)
         )
 
-        expect(hosts).toBe(setOf(Host("Zidan")))
+        expect(hosts).containsExactly(Host("Zidan"))
     }
 
     @Test
@@ -84,7 +85,7 @@ class FindSourceHostsTest {
             to = Timestamp(0)
         )
 
-        expect(hosts).toBe(setOf(Host("alpha"), Host("beta")))
+        expect(hosts).containsExactly(Host("alpha"), Host("beta"))
     }
 
     val lines = sequenceOf(

@@ -1,3 +1,5 @@
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.fluent.en_GB.notToBeNull
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import kotlin.test.Test
@@ -17,33 +19,31 @@ class HandlePeriodicReportsTest {
             onReports = print
         )
 
-        expect(hosts).toBe(
-            listOf(
-                emptySet(),
-                setOf(Host("Dayonte")),
-                setOf(Host("Shaquera")),
-                emptySet(),
-                emptySet(),
-                emptySet(),
-                setOf(Host("Zidan")),
-                emptySet(),
-                emptySet(),
-                setOf(Host("Adalhi"), Host("Terryn")),
-                setOf(Host("Kyus")),
-                setOf(Host("Taison")),
-                emptySet(),
-                emptySet(),
-                setOf(Host("Cliff")),
-                emptySet(),
-                emptySet(),
-                emptySet(),
-                emptySet(),
-                setOf(Host("Ivy")),
-                emptySet(),
-                setOf(Host("Azarel")),
-                emptySet(),
-                emptySet(),
-            )
+        expect(hosts).notToBeNull().containsExactly(
+            emptySet(),
+            setOf(Host("Dayonte")),
+            setOf(Host("Shaquera")),
+            emptySet(),
+            emptySet(),
+            emptySet(),
+            setOf(Host("Zidan")),
+            emptySet(),
+            emptySet(),
+            setOf(Host("Adalhi"), Host("Terryn")),
+            setOf(Host("Kyus")),
+            setOf(Host("Taison")),
+            emptySet(),
+            emptySet(),
+            setOf(Host("Cliff")),
+            emptySet(),
+            emptySet(),
+            emptySet(),
+            emptySet(),
+            setOf(Host("Ivy")),
+            emptySet(),
+            setOf(Host("Azarel")),
+            emptySet(),
+            emptySet(),
         )
     }
 }
@@ -59,25 +59,23 @@ class PeriodicReportsTest {
             maxTolerableLag = Duration(0),
         )
 
-        expect(hosts).toBe(
-            listOf(
-                setOf(
-                    Host("Eddison"),
-                ),
-                setOf(
-                    Host("Glorimar"),
-                    Host("Tashaya"),
-                ),
-                setOf(
-                    Host("Delona"),
-                    Host("Haileyjo"),
-                    Host("Evelyse"),
-                ),
-                setOf(
-                    Host("Nathanael"),
-                    Host("Ricquan"),
-                ),
-            )
+        expect(hosts).containsExactly(
+            setOf(
+                Host("Eddison"),
+            ),
+            setOf(
+                Host("Glorimar"),
+                Host("Tashaya"),
+            ),
+            setOf(
+                Host("Delona"),
+                Host("Haileyjo"),
+                Host("Evelyse"),
+            ),
+            setOf(
+                Host("Nathanael"),
+                Host("Ricquan"),
+            ),
         )
     }
 
@@ -96,7 +94,7 @@ class PeriodicReportsTest {
             maxTolerableLag = Duration(0),
         )
 
-        expect(hosts).toBe(listOf(setOf(Host("alpha"), Host("beta"))))
+        expect(hosts).containsExactly(setOf(Host("alpha"), Host("beta")))
     }
 
     @Test
@@ -118,13 +116,11 @@ class PeriodicReportsTest {
             maxTolerableLag = Duration(2),
         )
 
-        expect(hosts).toBe(
-            listOf(
-                setOf(
-                    Host("alpha"),
-                    Host("beta"),
-                    Host("gamma"),
-                ),
+        expect(hosts).containsExactly(
+            setOf(
+                Host("alpha"),
+                Host("beta"),
+                Host("gamma"),
             )
         )
     }
@@ -143,11 +139,9 @@ class PeriodicReportsTest {
             maxTolerableLag = Duration(0),
         )
 
-        expect(hosts).toBe(
-            listOf(
-                emptySet(),
-                setOf(Host("alpha")),
-            )
+        expect(hosts).containsExactly(
+            emptySet(),
+            setOf(Host("alpha")),
         )
     }
 
@@ -164,13 +158,11 @@ class PeriodicReportsTest {
             maxTolerableLag = Duration(2),
         )
 
-        expect(hosts).toBe(
-            listOf(
-                setOf(Host("alpha")),
-                emptySet(),
-                emptySet(),
-                setOf(Host("beta")),
-            )
+        expect(hosts).containsExactly(
+            setOf(Host("alpha")),
+            emptySet(),
+            emptySet(),
+            setOf(Host("beta")),
         )
     }
 
