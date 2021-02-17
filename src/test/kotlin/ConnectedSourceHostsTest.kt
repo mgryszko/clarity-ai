@@ -12,7 +12,7 @@ class ConnectedSourceHostsTest {
             val print: (Set<Host>) -> Unit = { hosts = it }
             val fileName = javaClass.getResource("input-file-10000.txt").path
 
-            handleConnectedSourceHost(
+            handleConnectedSourceHosts(
                 logFileName = fileName,
                 target = "Aaliayh",
                 fromMs = 1565656607767,
