@@ -3,20 +3,20 @@ import java.io.File
 fun main(args: Array<String>) {
     val logFileName = args[0]
     val target = args[1]
-    val from = args[2].toLong()
-    val to = args[3].toLong()
+    val fromMs = args[2].toLong()
+    val toMs = args[3].toLong()
 
-    handleConnectedSourceHost(logFileName, target, from, to, ::println)
+    handleConnectedSourceHost(logFileName, target, fromMs, toMs, ::println)
 }
 
-fun handleConnectedSourceHost(logFileName: String, target: String, from: Long, to: Long, onSourceHosts: (Collection<String>) -> Unit) {
+fun handleConnectedSourceHost(logFileName: String, target: String, fromMs: Long, toMs: Long, onSourceHosts: (Collection<String>) -> Unit) {
     val hosts = read(logFileName) { lines ->
         val parsedLines = parse(lines)
         findSourceHosts(
             lines = parsedLines,
             target = Host(target),
-            from = Timestamp(from),
-            to = Timestamp(to)
+            from = Timestamp(fromMs),
+            to = Timestamp(toMs)
         )
     }
 

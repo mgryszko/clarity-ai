@@ -15,8 +15,8 @@ class ConnectedSourceHostsTest {
             handleConnectedSourceHost(
                 logFileName = fileName,
                 target = "Aaliayh",
-                from = 1565656607767,
-                to = 1565680778409,
+                fromMs = 1565656607767,
+                toMs = 1565680778409,
                 onSourceHosts = print
             )
 
