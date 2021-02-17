@@ -30,13 +30,13 @@ fun handleWindowedReport(
     onReports(reports.map { it.map(Host::name) })
 }
 
-fun firstLine(logFileName: String): LogLine {
+private fun <T> read(fileName: String, processLines: (Sequence<String>) -> T): T =
+    File(fileName).useLines(Charsets.UTF_8, processLines)
+
+private fun firstLine(logFileName: String): LogLine {
     val line = File(logFileName).useLines { it.first() }
     return parse(line)
 }
-
-private fun <T> read(fileName: String, processLines: (Sequence<String>) -> T): T =
-    File(fileName).useLines(Charsets.UTF_8, processLines)
 
 private fun parse(lines: Sequence<String>): Sequence<LogLine> =
     lines.filter(String::isNotBlank).map(::parse)
