@@ -18,7 +18,7 @@ fun handlePeriodicReport(
 ) {
     val reports = read(logFileName) { lines ->
         val parsedLines = parse(lines)
-        connectedSourceHosts(
+        generatePeriodicReports(
             lines = parsedLines,
             host = Host(host),
             initialTimestamp = firstLine(logFileName).timestamp,
@@ -46,7 +46,7 @@ private fun parse(line: String): LogLine {
     return LogLine(timestamp = Timestamp(timestamp.toLong()), source = Host(source), target = Host(target))
 }
 
-fun connectedSourceHosts(
+fun generatePeriodicReports(
     lines: Sequence<LogLine>,
     host: Host,
     initialTimestamp: Timestamp,

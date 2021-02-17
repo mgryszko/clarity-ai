@@ -49,7 +49,7 @@ class PeriodicReportTest {
 
     @Test
     fun `connected sources in all report periods`() {
-        val hosts = connectedSourceHosts(
+        val hosts = generatePeriodicReports(
             lines = lines,
             host = Host("Aadison"),
             initialTimestamp = Timestamp(0),
@@ -81,7 +81,7 @@ class PeriodicReportTest {
 
     @Test
     fun `repeated source hosts`() {
-        val hosts = connectedSourceHosts(
+        val hosts = generatePeriodicReports(
             lines = sequenceOf(
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
@@ -99,7 +99,7 @@ class PeriodicReportTest {
 
     @Test
     fun `out of order entries`() {
-        val hosts = connectedSourceHosts(
+        val hosts = generatePeriodicReports(
             lines = sequenceOf(
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
                 LogLine(Timestamp(200), Host("omega"), Host("B")),
@@ -129,7 +129,7 @@ class PeriodicReportTest {
 
     @Test
     fun `no connected sources in reporting period`() {
-        val hosts = connectedSourceHosts(
+        val hosts = generatePeriodicReports(
             lines = sequenceOf(
                 LogLine(Timestamp(0), Host("omega"), Host("B")),
                 LogLine(Timestamp(999), Host("omega"), Host("B")),
@@ -151,7 +151,7 @@ class PeriodicReportTest {
 
     @Test
     fun `no log lines in report periods`() {
-        val hosts = connectedSourceHosts(
+        val hosts = generatePeriodicReports(
             lines = sequenceOf(
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
                 LogLine(Timestamp(3000), Host("beta"), Host("A")),
@@ -174,7 +174,7 @@ class PeriodicReportTest {
 
     @Test
     fun `log lines before initial timestamp`() {
-        val hosts = connectedSourceHosts(
+        val hosts = generatePeriodicReports(
             lines = sequenceOf(
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
                 LogLine(Timestamp(1), Host("omega"), Host("B")),
