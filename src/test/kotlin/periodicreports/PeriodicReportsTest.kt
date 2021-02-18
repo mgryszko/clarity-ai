@@ -5,6 +5,7 @@ import log.Duration
 import log.Host
 import log.LogLine
 import log.Timestamp
+import memory.ListLogReader
 import periodicreports.PeriodicReportsHandler
 import periodicreports.ReportCollector
 import kotlin.test.Test
@@ -60,7 +61,7 @@ class PeriodicReportsTest {
 
     @Test
     fun `connected sources in all report periods`() {
-        PeriodicReportsHandler(CollectionLogReader(lines), collector).handle(
+        PeriodicReportsHandler(ListLogReader(lines), collector).handle(
             host = Host("Aadison"),
             reportPeriod = Duration(1000),
             maxTolerableLag = Duration(0),
@@ -94,7 +95,7 @@ class PeriodicReportsTest {
             LogLine(Timestamp(0), Host("alpha"), Host("A")),
             LogLine(Timestamp(0), Host("beta"), Host("A")),
         )
-        PeriodicReportsHandler(CollectionLogReader(lines), collector).handle(
+        PeriodicReportsHandler(ListLogReader(lines), collector).handle(
             host = Host("A"),
             reportPeriod = Duration(1000),
             maxTolerableLag = Duration(0),
@@ -116,7 +117,7 @@ class PeriodicReportsTest {
             LogLine(Timestamp(397), Host("::"), Host("A")),
         )
 
-        PeriodicReportsHandler(CollectionLogReader(lines), collector).handle(
+        PeriodicReportsHandler(ListLogReader(lines), collector).handle(
             host = Host("A"),
             reportPeriod = Duration(500),
             maxTolerableLag = Duration(2),
@@ -139,7 +140,7 @@ class PeriodicReportsTest {
             LogLine(Timestamp(1000), Host("alpha"), Host("A")),
         )
 
-        PeriodicReportsHandler(CollectionLogReader(lines), collector).handle(
+        PeriodicReportsHandler(ListLogReader(lines), collector).handle(
             host = Host("A"),
             reportPeriod = Duration(1000),
             maxTolerableLag = Duration(0),
@@ -158,7 +159,7 @@ class PeriodicReportsTest {
             LogLine(Timestamp(3000), Host("beta"), Host("A")),
         )
 
-        PeriodicReportsHandler(CollectionLogReader(lines), collector).handle(
+        PeriodicReportsHandler(ListLogReader(lines), collector).handle(
             host = Host("A"),
             reportPeriod = Duration(1000),
             maxTolerableLag = Duration(2),
