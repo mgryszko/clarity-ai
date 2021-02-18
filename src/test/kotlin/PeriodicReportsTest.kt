@@ -12,7 +12,7 @@ class HandlePeriodicReportsTest {
 
         handlePeriodicReports(
             collector = collector,
-            logFileName = logFileName,
+            logReader = FileLogReader(logFileName),
             host = "Aaliayh",
             reportPeriodMs = 60 * 60 * 1000,
             maxTolerableLagMs = 5 * 60 * 1000
