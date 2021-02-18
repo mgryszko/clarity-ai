@@ -17,7 +17,7 @@ fun handlePeriodicReports(
     onReports: (List<Set<Host>>) -> Unit
 ) {
     val collector = ReportCollector()
-    val reports = read(logFileName) { lines ->
+    read(logFileName) { lines ->
         val parsedLines = parse(lines)
         generatePeriodicReports(
             lines = parsedLines,
@@ -50,19 +50,14 @@ fun generatePeriodicReports(
     reportPeriod: Duration,
     maxTolerableLag: Duration,
     reportCollector: ReportCollector,
-): List<Set<Host>> {
-    val hosts = mutableSetOf<Host>()
-    val reports = mutableListOf<Set<Host>>()
+) {
     var nextReportTimestamp = initialTimestamp + reportPeriod
     var timestampHighWatermark = initialTimestamp
     lines.forEach { (timestamp, source, target) ->
         if (timestamp >= nextReportTimestamp) {
-            reports.add(hosts.toSet())
-            hosts.clear()
             reportCollector.closeReport()
             if (timestamp / nextReportTimestamp > 1) {
                 repeat((timestamp / nextReportTimestamp).toInt() - 1) {
-                    reports.add(emptySet())
                     reportCollector.closeReport()
                 }
             }
@@ -70,7 +65,6 @@ fun generatePeriodicReports(
         }
         if (timestamp >= timestampHighWatermark - maxTolerableLag) {
             if (target == host) {
-                hosts.add(source)
                 reportCollector.sourceHostConnected(source)
             }
         }
@@ -78,8 +72,5 @@ fun generatePeriodicReports(
             timestampHighWatermark = timestamp
         }
     }
-    reports.add(hosts.toSet())
     reportCollector.closeReport()
-    return reports
 }
-
