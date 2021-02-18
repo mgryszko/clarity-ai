@@ -9,13 +9,13 @@ class ReportCollector(private val onReportReady: ((Set<Host>) -> Unit)) {
         sourceHosts.add(source)
     }
 
-    fun closeReport() {
+    fun emitReport() {
         onReportReady(sourceHosts.toSet())
         sourceHosts.clear()
     }
 
     @Suppress("ForEachParameterNotUsed")
-    fun closeEmptyReports(count: Long) {
+    fun emitEmptyReports(count: Long) {
         (0 until count).forEach {
             onReportReady(emptySet())
         }

@@ -15,6 +15,6 @@ class PeriodicReportsHandler(private val logReader: LogReader, private val colle
         logReader.readLines { line ->
             reportGenerator.processLogLine(line, collector)
         }
-        collector.closeReport()
+        collector.emitReport()
     }
 }

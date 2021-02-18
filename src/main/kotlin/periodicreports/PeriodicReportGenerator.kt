@@ -17,10 +17,10 @@ class PeriodicReportGenerator(
     fun processLogLine(line: LogLine, collector: ReportCollector) {
         val (timestamp, source, target) = line
         if (timestamp >= nextReportTimestamp) {
-            collector.closeReport()
+            collector.emitReport()
             val periodsWithNoLines = (timestamp / nextReportTimestamp) - 1
             if (periodsWithNoLines > 0) {
-                collector.closeEmptyReports(periodsWithNoLines)
+                collector.emitEmptyReports(periodsWithNoLines)
             }
             nextReportTimestamp += reportPeriod
         }
