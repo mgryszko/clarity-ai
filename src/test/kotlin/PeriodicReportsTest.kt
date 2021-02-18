@@ -3,18 +3,19 @@ import ch.tutteli.atrium.api.verbs.expect
 import kotlin.test.Test
 
 class HandlePeriodicReportsTest {
+    val hosts = mutableListOf<Set<Host>>()
+    val collector = ReportCollector(hosts::add)
+
     @Test
     fun `log from file, spying connected host obsrver`() {
-        val hosts = mutableListOf<Set<Host>>()
-        val onReportReady: (Set<Host>) -> Unit = { hosts.add(it) }
         val logFileName = javaClass.getResource("input-file-10000.txt").path
 
         handlePeriodicReports(
+            collector = collector,
             logFileName = logFileName,
             host = "Aaliayh",
             reportPeriodMs = 60 * 60 * 1000,
-            maxTolerableLagMs = 5 * 60 * 1000,
-            onReportReady = onReportReady
+            maxTolerableLagMs = 5 * 60 * 1000
         )
 
         expect(hosts).containsExactly(

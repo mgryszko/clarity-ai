@@ -6,17 +6,16 @@ fun main(args: Array<String>) {
     val reportPeriodMs = args[2].toLong()
     val maxTolerableLagMs = args[3].toLong()
 
-    handlePeriodicReports(logFileName, host, reportPeriodMs, maxTolerableLagMs, ::println)
+    handlePeriodicReports(ReportCollector(::println), logFileName, host, reportPeriodMs, maxTolerableLagMs)
 }
 
 fun handlePeriodicReports(
+    collector: ReportCollector,
     logFileName: String,
     host: String,
     reportPeriodMs: Long,
     maxTolerableLagMs: Long,
-    onReportReady: (Set<Host>) -> Unit,
 ) {
-    val collector = ReportCollector(onReportReady)
     read(logFileName) { lines ->
         val parsedLines = parse(lines)
         generatePeriodicReports(
