@@ -16,6 +16,7 @@ fun handlePeriodicReports(
     maxTolerableLagMs: Long,
     onReports: (List<Set<Host>>) -> Unit
 ) {
+    val collector = ReportCollector()
     val reports = read(logFileName) { lines ->
         val parsedLines = parse(lines)
         generatePeriodicReports(
@@ -24,11 +25,11 @@ fun handlePeriodicReports(
             initialTimestamp = firstLine(logFileName).timestamp,
             reportPeriod = Duration(reportPeriodMs),
             maxTolerableLag = Duration(maxTolerableLagMs),
-            reportCollector = ReportCollector(),
+            reportCollector = collector
         )
     }
 
-    onReports(reports)
+    onReports(collector.reports)
 }
 
 private fun <T> read(fileName: String, processLines: (Sequence<String>) -> T): T =
