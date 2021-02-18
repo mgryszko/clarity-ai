@@ -62,7 +62,7 @@ class PeriodicReportsTest {
             maxTolerableLag = Duration(0),
         )
 
-        expect(hosts).containsExactly(
+        expect(collector.reports).containsExactly(
             setOf(
                 Host("Eddison"),
             ),
@@ -98,7 +98,7 @@ class PeriodicReportsTest {
             reportCollector = collector,
         )
 
-        expect(hosts).containsExactly(setOf(Host("alpha"), Host("beta")))
+        expect(collector.reports).containsExactly(setOf(Host("alpha"), Host("beta")))
     }
 
     @Test
@@ -121,7 +121,7 @@ class PeriodicReportsTest {
             reportCollector = collector,
         )
 
-        expect(hosts).containsExactly(
+        expect(collector.reports).containsExactly(
             setOf(
                 Host("alpha"),
                 Host("beta"),
@@ -145,7 +145,7 @@ class PeriodicReportsTest {
             reportCollector = collector,
         )
 
-        expect(hosts).containsExactly(
+        expect(collector.reports).containsExactly(
             emptySet(),
             setOf(Host("alpha")),
         )
@@ -165,7 +165,7 @@ class PeriodicReportsTest {
             reportCollector = collector,
         )
 
-        expect(hosts).containsExactly(
+        expect(collector.reports).containsExactly(
             setOf(Host("alpha")),
             emptySet(),
             emptySet(),
@@ -188,7 +188,7 @@ class PeriodicReportsTest {
             reportCollector = collector,
         )
 
-        expect(hosts).toBe(listOf(setOf(Host("beta"))))
+        expect(collector.reports).toBe(listOf(setOf(Host("beta"))))
     }
 
     val lines = sequenceOf(
