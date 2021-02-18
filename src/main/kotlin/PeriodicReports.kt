@@ -4,5 +4,9 @@ fun main(args: Array<String>) {
     val reportPeriodMs = args[2].toLong()
     val maxTolerableLagMs = args[3].toLong()
 
-    PeriodicReportsHandler(FileLogReader(logFileName), ReportCollector(::println)).handle(host, reportPeriodMs, maxTolerableLagMs)
+    PeriodicReportsHandler(FileLogReader(logFileName), ReportCollector(::println)).handle(
+        Host(host),
+        Duration(reportPeriodMs),
+        Duration(maxTolerableLagMs)
+    )
 }

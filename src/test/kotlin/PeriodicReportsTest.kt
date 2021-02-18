@@ -7,13 +7,15 @@ class HandlePeriodicReportsTest {
     val collector = ReportCollector(reports::add)
     val logFileName = javaClass.getResource("input-file-10000.txt").path!!
     val handler = PeriodicReportsHandler(FileLogReader(logFileName), collector)
+    val oneHour = Duration(60 * 60 * 1000)
+    val fiveMinutes = Duration(5 * 60 * 1000)
 
     @Test
     fun `log from file, spying connected host obsrver`() {
         handler.handle(
-            host = "Aaliayh",
-            reportPeriodMs = 60 * 60 * 1000,
-            maxTolerableLagMs = 5 * 60 * 1000
+            host = Host("Aaliayh"),
+            reportPeriod = oneHour,
+            maxTolerableLag = fiveMinutes
         )
 
         expect(reports).containsExactly(
@@ -52,9 +54,9 @@ class PeriodicReportsTest {
     @Test
     fun `connected sources in all report periods`() {
         PeriodicReportsHandler(CollectionLogReader(lines), collector).handle(
-            host = "Aadison",
-            reportPeriodMs = 1000,
-            maxTolerableLagMs = 0
+            host = Host("Aadison"),
+            reportPeriod = Duration(1000),
+            maxTolerableLag = Duration(0),
         )
 
         expect(reports).containsExactly(
@@ -86,9 +88,9 @@ class PeriodicReportsTest {
             LogLine(Timestamp(0), Host("beta"), Host("A")),
         )
         PeriodicReportsHandler(CollectionLogReader(lines), collector).handle(
-            host = "A",
-            reportPeriodMs = 1000,
-            maxTolerableLagMs = 0
+            host = Host("A"),
+            reportPeriod = Duration(1000),
+            maxTolerableLag = Duration(0),
         )
 
         expect(reports).containsExactly(setOf(Host("alpha"), Host("beta")))
@@ -108,9 +110,9 @@ class PeriodicReportsTest {
         )
 
         PeriodicReportsHandler(CollectionLogReader(lines), collector).handle(
-            host = "A",
-            reportPeriodMs = 500,
-            maxTolerableLagMs = 2
+            host = Host("A"),
+            reportPeriod = Duration(500),
+            maxTolerableLag = Duration(2),
         )
 
         expect(reports).containsExactly(
@@ -131,9 +133,9 @@ class PeriodicReportsTest {
         )
 
         PeriodicReportsHandler(CollectionLogReader(lines), collector).handle(
-            host = "A",
-            reportPeriodMs = 1000,
-            maxTolerableLagMs = 0
+            host = Host("A"),
+            reportPeriod = Duration(1000),
+            maxTolerableLag = Duration(0),
         )
 
         expect(reports).containsExactly(
@@ -150,9 +152,9 @@ class PeriodicReportsTest {
         )
 
         PeriodicReportsHandler(CollectionLogReader(lines), collector).handle(
-            host = "A",
-            reportPeriodMs = 1000,
-            maxTolerableLagMs = 2
+            host = Host("A"),
+            reportPeriod = Duration(1000),
+            maxTolerableLag = Duration(2),
         )
 
         expect(reports).containsExactly(

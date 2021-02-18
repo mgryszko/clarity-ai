@@ -1,14 +1,10 @@
 class PeriodicReportsHandler(private val logReader: LogReader, private val collector: ReportCollector) {
-    fun handle(
-        host: String,
-        reportPeriodMs: Long,
-        maxTolerableLagMs: Long,
-    ) {
+    fun handle(host: Host, reportPeriod: Duration, maxTolerableLag: Duration) {
         val reportGenerator = PeriodicReportGenerator(
-            Host(host),
-            logReader.firstLine().timestamp,
-            Duration(reportPeriodMs),
-            Duration(maxTolerableLagMs)
+            host = host,
+            initialTimestamp = logReader.firstLine().timestamp,
+            reportPeriod = reportPeriod,
+            maxTolerableLag = maxTolerableLag
         )
         logReader.readLines { line ->
             reportGenerator.processLogLine(line, collector)
