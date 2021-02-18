@@ -18,13 +18,16 @@ fun handlePeriodicReports(
 ) {
     read(logFileName) { lines ->
         val parsedLines = parse(lines)
+        val reportGenerator = PeriodicReportGenerator(
+            Host(host),
+            firstLine(logFileName).timestamp,
+            Duration(reportPeriodMs),
+            Duration(maxTolerableLagMs)
+        )
         generatePeriodicReports(
             lines = parsedLines,
-            host = Host(host),
-            initialTimestamp = firstLine(logFileName).timestamp,
-            reportPeriod = Duration(reportPeriodMs),
-            maxTolerableLag = Duration(maxTolerableLagMs),
-            reportCollector = collector
+            reportCollector = collector,
+            reportGenerator = reportGenerator
         )
     }
 }
@@ -42,13 +45,9 @@ private fun parse(lines: Sequence<String>): Sequence<LogLine> =
 
 fun generatePeriodicReports(
     lines: Sequence<LogLine>,
-    host: Host,
-    initialTimestamp: Timestamp,
-    reportPeriod: Duration,
-    maxTolerableLag: Duration,
     reportCollector: ReportCollector,
+    reportGenerator: PeriodicReportGenerator,
 ) {
-    val reportGenerator = PeriodicReportGenerator(host, initialTimestamp, reportPeriod, maxTolerableLag)
     lines.forEach { line -> reportGenerator.processLogLine(line, reportCollector) }
     reportCollector.closeReport()
 }

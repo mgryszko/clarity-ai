@@ -53,13 +53,15 @@ class PeriodicReportsTest {
 
     @Test
     fun `connected sources in all report periods`() {
+        val host = Host("Aadison")
+        val initialTimestamp = Timestamp(0)
+        val reportPeriod = Duration(1000)
+        val maxTolerableLag = Duration(0)
+
         generatePeriodicReports(
-            reportCollector = collector,
             lines = lines,
-            host = Host("Aadison"),
-            initialTimestamp = Timestamp(0),
-            reportPeriod = Duration(1000),
-            maxTolerableLag = Duration(0),
+            reportCollector = collector,
+            reportGenerator = PeriodicReportGenerator(host, initialTimestamp, reportPeriod, maxTolerableLag),
         )
 
         expect(reports).containsExactly(
@@ -84,6 +86,11 @@ class PeriodicReportsTest {
 
     @Test
     fun `repeated source hosts`() {
+        val host = Host("A")
+        val initialTimestamp = Timestamp(0)
+        val reportPeriod = Duration(1000)
+        val maxTolerableLag = Duration(0)
+
         generatePeriodicReports(
             lines = sequenceOf(
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
@@ -91,11 +98,8 @@ class PeriodicReportsTest {
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
                 LogLine(Timestamp(0), Host("beta"), Host("A")),
             ),
-            host = Host("A"),
-            initialTimestamp = Timestamp(0),
-            reportPeriod = Duration(1000),
-            maxTolerableLag = Duration(0),
             reportCollector = collector,
+            reportGenerator = PeriodicReportGenerator(host, initialTimestamp, reportPeriod, maxTolerableLag),
         )
 
         expect(reports).containsExactly(setOf(Host("alpha"), Host("beta")))
@@ -103,6 +107,11 @@ class PeriodicReportsTest {
 
     @Test
     fun `out of order entries`() {
+        val host = Host("A")
+        val initialTimestamp = Timestamp(0)
+        val reportPeriod = Duration(500)
+        val maxTolerableLag = Duration(2)
+
         generatePeriodicReports(
             lines = sequenceOf(
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
@@ -114,11 +123,8 @@ class PeriodicReportsTest {
                 LogLine(Timestamp(400), Host("psi"), Host("B")),
                 LogLine(Timestamp(397), Host("::"), Host("A")),
             ),
-            host = Host("A"),
-            initialTimestamp = Timestamp(0),
-            reportPeriod = Duration(500),
-            maxTolerableLag = Duration(2),
             reportCollector = collector,
+            reportGenerator = PeriodicReportGenerator(host, initialTimestamp, reportPeriod, maxTolerableLag),
         )
 
         expect(reports).containsExactly(
@@ -132,17 +138,19 @@ class PeriodicReportsTest {
 
     @Test
     fun `no connected sources in reporting period`() {
+        val host = Host("A")
+        val initialTimestamp = Timestamp(0)
+        val reportPeriod = Duration(1000)
+        val maxTolerableLag = Duration(0)
+
         generatePeriodicReports(
             lines = sequenceOf(
                 LogLine(Timestamp(0), Host("omega"), Host("B")),
                 LogLine(Timestamp(999), Host("omega"), Host("B")),
                 LogLine(Timestamp(1000), Host("alpha"), Host("A")),
             ),
-            host = Host("A"),
-            initialTimestamp = Timestamp(0),
-            reportPeriod = Duration(1000),
-            maxTolerableLag = Duration(0),
             reportCollector = collector,
+            reportGenerator = PeriodicReportGenerator(host, initialTimestamp, reportPeriod, maxTolerableLag),
         )
 
         expect(reports).containsExactly(
@@ -153,16 +161,18 @@ class PeriodicReportsTest {
 
     @Test
     fun `no log lines in report periods`() {
+        val host = Host("A")
+        val initialTimestamp = Timestamp(0)
+        val reportPeriod = Duration(1000)
+        val maxTolerableLag = Duration(2)
+
         generatePeriodicReports(
             lines = sequenceOf(
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
                 LogLine(Timestamp(3000), Host("beta"), Host("A")),
             ),
-            host = Host("A"),
-            initialTimestamp = Timestamp(0),
-            reportPeriod = Duration(1000),
-            maxTolerableLag = Duration(2),
             reportCollector = collector,
+            reportGenerator = PeriodicReportGenerator(host, initialTimestamp, reportPeriod, maxTolerableLag),
         )
 
         expect(reports).containsExactly(
@@ -175,17 +185,19 @@ class PeriodicReportsTest {
 
     @Test
     fun `log lines before initial timestamp`() {
+        val host = Host("A")
+        val initialTimestamp = Timestamp(2)
+        val reportPeriod = Duration(1000)
+        val maxTolerableLag = Duration(0)
+
         generatePeriodicReports(
             lines = sequenceOf(
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
                 LogLine(Timestamp(1), Host("omega"), Host("B")),
                 LogLine(Timestamp(2), Host("beta"), Host("A")),
             ),
-            host = Host("A"),
-            initialTimestamp = Timestamp(2),
-            reportPeriod = Duration(1000),
-            maxTolerableLag = Duration(0),
             reportCollector = collector,
+            reportGenerator = PeriodicReportGenerator(host, initialTimestamp, reportPeriod, maxTolerableLag),
         )
 
         expect(reports).containsExactly(setOf(Host("beta")))
