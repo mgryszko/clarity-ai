@@ -56,10 +56,9 @@ fun generatePeriodicReports(
     lines.forEach { (timestamp, source, target) ->
         if (timestamp >= nextReportTimestamp) {
             reportCollector.closeReport()
-            if (timestamp / nextReportTimestamp > 1) {
-                repeat((timestamp / nextReportTimestamp).toInt() - 1) {
-                    reportCollector.closeReport()
-                }
+            val periodsWithNoLines = (timestamp / nextReportTimestamp) - 1
+            if (periodsWithNoLines > 0) {
+                reportCollector.closeEmptyReports(periodsWithNoLines)
             }
             nextReportTimestamp += reportPeriod
         }

@@ -12,4 +12,9 @@ class ReportCollector {
         _reports.add(sourceHosts.toSet())
         sourceHosts.clear()
     }
+
+    @Suppress("ForEachParameterNotUsed")
+    fun closeEmptyReports(count: Long) {
+        (0 until count).forEach { _reports.add(emptySet()) }
+    }
 }
