@@ -1,14 +1,12 @@
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.notToBeNull
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import kotlin.test.Test
 
 class HandlePeriodicReportsTest {
     @Test
     fun `log from file, spying connected host obsrver`() {
-        var hosts: List<Set<Host>>? = null
-        val print: (List<Set<Host>>) -> Unit = { hosts = it }
+        val hosts = mutableListOf<Set<Host>>()
+        val onReportReady: (Set<Host>) -> Unit = { hosts.add(it) }
         val logFileName = javaClass.getResource("input-file-10000.txt").path
 
         handlePeriodicReports(
@@ -16,10 +14,10 @@ class HandlePeriodicReportsTest {
             host = "Aaliayh",
             reportPeriodMs = 60 * 60 * 1000,
             maxTolerableLagMs = 5 * 60 * 1000,
-            onReports = print
+            onReportReady = onReportReady
         )
 
-        expect(hosts).notToBeNull().containsExactly(
+        expect(hosts).containsExactly(
             emptySet(),
             setOf(Host("Dayonte")),
             setOf(Host("Shaquera")),
@@ -49,7 +47,8 @@ class HandlePeriodicReportsTest {
 }
 
 class PeriodicReportsTest {
-    val collector = ReportCollector()
+    val reports = mutableListOf<Set<Host>>()
+    val collector = ReportCollector(reports::add)
 
     @Test
     fun `connected sources in all report periods`() {
@@ -62,7 +61,7 @@ class PeriodicReportsTest {
             maxTolerableLag = Duration(0),
         )
 
-        expect(collector.reports).containsExactly(
+        expect(reports).containsExactly(
             setOf(
                 Host("Eddison"),
             ),
@@ -98,7 +97,7 @@ class PeriodicReportsTest {
             reportCollector = collector,
         )
 
-        expect(collector.reports).containsExactly(setOf(Host("alpha"), Host("beta")))
+        expect(reports).containsExactly(setOf(Host("alpha"), Host("beta")))
     }
 
     @Test
@@ -121,7 +120,7 @@ class PeriodicReportsTest {
             reportCollector = collector,
         )
 
-        expect(collector.reports).containsExactly(
+        expect(reports).containsExactly(
             setOf(
                 Host("alpha"),
                 Host("beta"),
@@ -145,7 +144,7 @@ class PeriodicReportsTest {
             reportCollector = collector,
         )
 
-        expect(collector.reports).containsExactly(
+        expect(reports).containsExactly(
             emptySet(),
             setOf(Host("alpha")),
         )
@@ -165,7 +164,7 @@ class PeriodicReportsTest {
             reportCollector = collector,
         )
 
-        expect(collector.reports).containsExactly(
+        expect(reports).containsExactly(
             setOf(Host("alpha")),
             emptySet(),
             emptySet(),
@@ -188,7 +187,7 @@ class PeriodicReportsTest {
             reportCollector = collector,
         )
 
-        expect(collector.reports).toBe(listOf(setOf(Host("beta"))))
+        expect(reports).containsExactly(setOf(Host("beta")))
     }
 
     val lines = sequenceOf(
