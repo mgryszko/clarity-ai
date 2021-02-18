@@ -48,25 +48,7 @@ fun generatePeriodicReports(
     maxTolerableLag: Duration,
     reportCollector: ReportCollector,
 ) {
-    var nextReportTimestamp = initialTimestamp + reportPeriod
-    var timestampHighWatermark = initialTimestamp
-    lines.forEach { (timestamp, source, target) ->
-        if (timestamp >= nextReportTimestamp) {
-            reportCollector.closeReport()
-            val periodsWithNoLines = (timestamp / nextReportTimestamp) - 1
-            if (periodsWithNoLines > 0) {
-                reportCollector.closeEmptyReports(periodsWithNoLines)
-            }
-            nextReportTimestamp += reportPeriod
-        }
-        if (timestamp >= timestampHighWatermark - maxTolerableLag) {
-            if (target == host) {
-                reportCollector.sourceHostConnected(source)
-            }
-        }
-        if (timestamp > timestampHighWatermark) {
-            timestampHighWatermark = timestamp
-        }
-    }
+    val reportGenerator = PeriodicReportGenerator(host, initialTimestamp, reportPeriod, maxTolerableLag)
+    lines.forEach { line -> reportGenerator.processLogLine(line, reportCollector) }
     reportCollector.closeReport()
 }
