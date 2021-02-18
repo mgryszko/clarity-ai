@@ -1,3 +1,8 @@
+package main
+
+import log.Host
+import log.LogLine
+import log.Timestamp
 import java.io.File
 
 fun main(args: Array<String>) {
@@ -28,6 +33,11 @@ private fun <T> read(fileName: String, processLines: (Sequence<String>) -> T): T
 
 private fun parse(lines: Sequence<String>): Sequence<LogLine> =
     lines.filter(String::isNotBlank).map(::parse)
+
+private fun parse(line: String): LogLine {
+    val (timestamp, source, target) = line.split(" ")
+    return LogLine(timestamp = Timestamp(timestamp.toLong()), source = Host(source), target = Host(target))
+}
 
 fun findSourceHosts(
     lines: Sequence<LogLine>,

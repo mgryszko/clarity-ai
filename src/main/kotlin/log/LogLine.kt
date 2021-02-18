@@ -1,3 +1,5 @@
+package log
+
 inline class Host(val name: String)
 
 inline class Timestamp(val instant: Long) {

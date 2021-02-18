@@ -61,11 +61,11 @@ tasks.test {
 task("connectedHosts", JavaExec::class) {
     classpath = sourceSets.main.get().runtimeClasspath
 
-    mainClass.set("ConnectedSourceHostsKt")
+    mainClass.set("main.ConnectedSourceHostsKt")
 }
 
 task("periodicReports", JavaExec::class) {
     classpath = sourceSets.main.get().runtimeClasspath
 
-    mainClass.set("PeriodicReportsKt")
+    mainClass.set("main.PeriodicReportsKt")
 }

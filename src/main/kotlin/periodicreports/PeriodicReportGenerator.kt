@@ -1,3 +1,10 @@
+package periodicreports
+
+import log.Duration
+import log.Host
+import log.LogLine
+import log.Timestamp
+
 class PeriodicReportGenerator(
     private val host: Host,
     initialTimestamp: Timestamp,

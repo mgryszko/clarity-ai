@@ -1,3 +1,7 @@
+package periodicreports
+
+import log.Host
+
 class ReportCollector(private val onReportReady: ((Set<Host>) -> Unit)) {
     private val sourceHosts = mutableSetOf<Host>()
 
