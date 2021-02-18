@@ -49,9 +49,12 @@ class HandlePeriodicReportsTest {
 }
 
 class PeriodicReportsTest {
+    val collector = ReportCollector()
+
     @Test
     fun `connected sources in all report periods`() {
         val hosts = generatePeriodicReports(
+            reportCollector = collector,
             lines = lines,
             host = Host("Aadison"),
             initialTimestamp = Timestamp(0),
@@ -92,6 +95,7 @@ class PeriodicReportsTest {
             initialTimestamp = Timestamp(0),
             reportPeriod = Duration(1000),
             maxTolerableLag = Duration(0),
+            reportCollector = collector,
         )
 
         expect(hosts).containsExactly(setOf(Host("alpha"), Host("beta")))
@@ -114,6 +118,7 @@ class PeriodicReportsTest {
             initialTimestamp = Timestamp(0),
             reportPeriod = Duration(500),
             maxTolerableLag = Duration(2),
+            reportCollector = collector,
         )
 
         expect(hosts).containsExactly(
@@ -137,6 +142,7 @@ class PeriodicReportsTest {
             initialTimestamp = Timestamp(0),
             reportPeriod = Duration(1000),
             maxTolerableLag = Duration(0),
+            reportCollector = collector,
         )
 
         expect(hosts).containsExactly(
@@ -156,6 +162,7 @@ class PeriodicReportsTest {
             initialTimestamp = Timestamp(0),
             reportPeriod = Duration(1000),
             maxTolerableLag = Duration(2),
+            reportCollector = collector,
         )
 
         expect(hosts).containsExactly(
@@ -178,6 +185,7 @@ class PeriodicReportsTest {
             initialTimestamp = Timestamp(2),
             reportPeriod = Duration(1000),
             maxTolerableLag = Duration(0),
+            reportCollector = collector,
         )
 
         expect(hosts).toBe(listOf(setOf(Host("beta"))))
