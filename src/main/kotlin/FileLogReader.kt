@@ -1,7 +1,7 @@
 import java.io.File
 
-class FileLogReader(private val logFileName: String) {
-    fun readLines(action: (LogLine) -> Unit) {
+class FileLogReader(private val logFileName: String) : LogReader {
+    override fun readLines(action: (LogLine) -> Unit) {
         File(logFileName).bufferedReader().use { reader ->
             var line: String?
             do {
@@ -11,7 +11,7 @@ class FileLogReader(private val logFileName: String) {
         }
     }
 
-    fun firstLine(): LogLine {
+    override fun firstLine(): LogLine {
         val line = File(logFileName).useLines { it.first() }
         return parse(line)
     }

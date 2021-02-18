@@ -9,7 +9,7 @@ fun main(args: Array<String>) {
 
 fun handlePeriodicReports(
     collector: ReportCollector,
-    logReader: FileLogReader,
+    logReader: LogReader,
     host: String,
     reportPeriodMs: Long,
     maxTolerableLagMs: Long,
