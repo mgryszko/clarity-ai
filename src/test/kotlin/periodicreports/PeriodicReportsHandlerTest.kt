@@ -13,7 +13,7 @@ import java.io.File
 import kotlin.test.Test
 
 class PeriodicReportsHandlerTest {
-    val reports = mutableListOf<Set<Host>>()
+    val reports = mutableListOf<Report>()
     val collector = ReportCollector(reports::add)
     val logFile = File(javaClass.getResource("/input-file-10000.txt").path!!)
 
@@ -32,30 +32,30 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                emptySet(),
-                setOf(Host("Dayonte")),
-                setOf(Host("Shaquera")),
-                emptySet(),
-                emptySet(),
-                emptySet(),
-                setOf(Host("Zidan")),
-                emptySet(),
-                emptySet(),
-                setOf(Host("Adalhi"), Host("Terryn")),
-                setOf(Host("Kyus")),
-                setOf(Host("Taison")),
-                emptySet(),
-                emptySet(),
-                setOf(Host("Cliff")),
-                emptySet(),
-                emptySet(),
-                emptySet(),
-                emptySet(),
-                setOf(Host("Ivy")),
-                emptySet(),
-                setOf(Host("Azarel")),
-                emptySet(),
-                emptySet(),
+                Report(emptySet()),
+                Report(setOf(Host("Dayonte"))),
+                Report(setOf(Host("Shaquera"))),
+                Report(emptySet()),
+                Report(emptySet()),
+                Report(emptySet()),
+                Report(setOf(Host("Zidan"))),
+                Report(emptySet()),
+                Report(emptySet()),
+                Report(setOf(Host("Adalhi"), Host("Terryn"))),
+                Report(setOf(Host("Kyus"))),
+                Report(setOf(Host("Taison"))),
+                Report(emptySet()),
+                Report(emptySet()),
+                Report(setOf(Host("Cliff"))),
+                Report(emptySet()),
+                Report(emptySet()),
+                Report(emptySet()),
+                Report(emptySet()),
+                Report(setOf(Host("Ivy"))),
+                Report(emptySet()),
+                Report(setOf(Host("Azarel"))),
+                Report(emptySet()),
+                Report(emptySet()),
             )
         }
     }
@@ -71,22 +71,10 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                setOf(
-                    Host("Eddison"),
-                ),
-                setOf(
-                    Host("Glorimar"),
-                    Host("Tashaya"),
-                ),
-                setOf(
-                    Host("Delona"),
-                    Host("Haileyjo"),
-                    Host("Evelyse"),
-                ),
-                setOf(
-                    Host("Nathanael"),
-                    Host("Ricquan"),
-                ),
+                Report(setOf(Host("Eddison"))),
+                Report(setOf(Host("Glorimar"), Host("Tashaya"))),
+                Report(setOf(Host("Delona"), Host("Haileyjo"), Host("Evelyse"))),
+                Report(setOf(Host("Nathanael"), Host("Ricquan"))),
             )
         }
 
@@ -104,7 +92,7 @@ class PeriodicReportsHandlerTest {
                 maxTolerableLag = Duration(0),
             )
 
-            expect(reports).containsExactly(setOf(Host("alpha"), Host("beta")))
+            expect(reports).containsExactly(Report(setOf(Host("alpha"), Host("beta"))))
         }
 
         @Test
@@ -127,11 +115,7 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                setOf(
-                    Host("alpha"),
-                    Host("beta"),
-                    Host("gamma"),
-                )
+                Report(setOf(Host("alpha"), Host("beta"), Host("gamma"))),
             )
         }
 
@@ -150,8 +134,8 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                emptySet(),
-                setOf(Host("alpha")),
+                Report(emptySet()),
+                Report(setOf(Host("alpha"))),
             )
         }
 
@@ -169,10 +153,10 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                setOf(Host("alpha")),
-                emptySet(),
-                emptySet(),
-                setOf(Host("beta")),
+                Report(setOf(Host("alpha"))),
+                Report(emptySet()),
+                Report(emptySet()),
+                Report(setOf(Host("beta"))),
             )
         }
 
