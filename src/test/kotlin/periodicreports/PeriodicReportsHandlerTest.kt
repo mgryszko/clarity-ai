@@ -64,10 +64,10 @@ class PeriodicReportsHandlerTest {
     }
 
     @Nested
-    inner class HandleInMemoryLog {
+    inner class ReceivedConnectionFromSource {
         @Test
-        fun `connected sources in all report periods`() {
-            val actionsByFilters = mapOf(connectedToTarget(Host("Aadison")) to onSourceConnected(emitter))
+        fun `received connections from sources in all report periods`() {
+            val actionsByFilters = mapOf(receivedConnectionFromSource(Host("A")) to onConnectedToTarget(emitter))
 
             PeriodicReportsHandler(ListLogReader(lines), emitter, actionsByFilters).handle(
                 reportPeriod = Duration(1000),
@@ -75,15 +75,99 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                Report(setOf(Host("Eddison"))),
-                Report(setOf(Host("Glorimar"), Host("Tashaya"))),
-                Report(setOf(Host("Delona"), Host("Haileyjo"), Host("Evelyse"))),
-                Report(setOf(Host("Nathanael"), Host("Ricquan"))),
+                Report(targets = setOf(Host("eta"))),
+                Report(targets = setOf(Host("iota"), Host("nu"))),
+                Report(targets = setOf(Host("tau"), Host("psi"), Host("omega"))),
+                Report(targets = setOf(Host("as"), Host("buki"))),
             )
         }
 
+        val lines = listOf(
+            LogLine(Timestamp(0), Host("B"), Host("alpha")),
+            LogLine(Timestamp(100), Host("C"), Host("beta")),
+            LogLine(Timestamp(200), Host("B"), Host("gamma")),
+            LogLine(Timestamp(300), Host("B"), Host("delta")),
+            LogLine(Timestamp(400), Host("C"), Host("epsilon")),
+            LogLine(Timestamp(700), Host("B"), Host("zeta")),
+            LogLine(Timestamp(800), Host("A"), Host("eta")),
+            LogLine(Timestamp(900), Host("B"), Host("theta")),
+
+            LogLine(Timestamp(1000), Host("A"), Host("iota")),
+            LogLine(Timestamp(1100), Host("B"), Host("kappa")),
+            LogLine(Timestamp(1200), Host("C"), Host("lambda")),
+            LogLine(Timestamp(1400), Host("B"), Host("mu")),
+            LogLine(Timestamp(1500), Host("A"), Host("nu")),
+            LogLine(Timestamp(1600), Host("B"), Host("omicron")),
+            LogLine(Timestamp(1700), Host("C"), Host("pi")),
+            LogLine(Timestamp(1800), Host("C"), Host("rho")),
+            LogLine(Timestamp(1900), Host("B"), Host("sigma")),
+
+            LogLine(Timestamp(2000), Host("A"), Host("tau")),
+            LogLine(Timestamp(2100), Host("B"), Host("upsilon")),
+            LogLine(Timestamp(2300), Host("B"), Host("phi")),
+            LogLine(Timestamp(2400), Host("C"), Host("chi")),
+            LogLine(Timestamp(2500), Host("A"), Host("psi")),
+            LogLine(Timestamp(2900), Host("A"), Host("omega")),
+
+            LogLine(Timestamp(3000), Host("A"), Host("as")),
+            LogLine(Timestamp(3300), Host("A"), Host("buki")),
+            LogLine(Timestamp(3500), Host("C"), Host("vedi")),
+        )
+    }
+
+    @Nested
+    inner class ConnectedToTarget {
         @Test
-        fun `repeated source hosts`() {
+        fun `connected sources in all report periods`() {
+            val actionsByFilters = mapOf(connectedToTarget(Host("A")) to onSourceConnected(emitter))
+
+            PeriodicReportsHandler(ListLogReader(lines), emitter, actionsByFilters).handle(
+                reportPeriod = Duration(1000),
+                maxTolerableLag = Duration(0),
+            )
+
+            expect(reports).containsExactly(
+                Report(sources = setOf(Host("eta"))),
+                Report(sources = setOf(Host("iota"), Host("nu"))),
+                Report(sources = setOf(Host("tau"), Host("psi"), Host("omega"))),
+                Report(sources = setOf(Host("as"), Host("buki"))),
+            )
+        }
+
+        val lines = listOf(
+            LogLine(Timestamp(0), Host("alpha"), Host("B")),
+            LogLine(Timestamp(100), Host("beta"), Host("C")),
+            LogLine(Timestamp(200), Host("gamma"), Host("B")),
+            LogLine(Timestamp(300), Host("delta"), Host("B")),
+            LogLine(Timestamp(400), Host("epsilon"), Host("C")),
+            LogLine(Timestamp(700), Host("zeta"), Host("B")),
+            LogLine(Timestamp(800), Host("eta"), Host("A")),
+            LogLine(Timestamp(900), Host("theta"), Host("B")),
+            LogLine(Timestamp(1000), Host("iota"), Host("A")),
+            LogLine(Timestamp(1100), Host("kappa"), Host("B")),
+            LogLine(Timestamp(1200), Host("lambda"), Host("C")),
+            LogLine(Timestamp(1400), Host("mu"), Host("B")),
+            LogLine(Timestamp(1500), Host("nu"), Host("A")),
+            LogLine(Timestamp(1600), Host("omicron"), Host("B")),
+            LogLine(Timestamp(1700), Host("pi"), Host("C")),
+            LogLine(Timestamp(1800), Host("rho"), Host("C")),
+            LogLine(Timestamp(1900), Host("sigma"), Host("B")),
+            LogLine(Timestamp(2000), Host("tau"), Host("A")),
+            LogLine(Timestamp(2100), Host("upsilon"), Host("B")),
+            LogLine(Timestamp(2300), Host("phi"), Host("B")),
+            LogLine(Timestamp(2400), Host("chi"), Host("C")),
+            LogLine(Timestamp(2500), Host("psi"), Host("A")),
+            LogLine(Timestamp(2900), Host("omega"), Host("A")),
+            LogLine(Timestamp(3000), Host("as"), Host("A")),
+            LogLine(Timestamp(3300), Host("buki"), Host("A")),
+            LogLine(Timestamp(3500), Host("vedi"), Host("C")),
+        )
+    }
+
+    @Nested
+    inner class CornerCases {
+        @Test
+        fun `repeated log lines`() {
             val actionsByFilters = mapOf(connectedToTarget(Host("A")) to onSourceConnected(emitter))
             val lines = listOf(
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
@@ -97,11 +181,11 @@ class PeriodicReportsHandlerTest {
                 maxTolerableLag = Duration(0),
             )
 
-            expect(reports).containsExactly(Report(setOf(Host("alpha"), Host("beta"))))
+            expect(reports).containsExactly(Report(sources = setOf(Host("alpha"), Host("beta"))))
         }
 
         @Test
-        fun `out of order entries`() {
+        fun `out of order log lines`() {
             val actionsByFilters = mapOf(connectedToTarget(Host("A")) to onSourceConnected(emitter))
             val lines = listOf(
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
@@ -120,12 +204,12 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                Report(setOf(Host("alpha"), Host("beta"), Host("gamma"))),
+                Report(sources = setOf(Host("alpha"), Host("beta"), Host("gamma"))),
             )
         }
 
         @Test
-        fun `no connected sources in reporting period`() {
+        fun `no log lines passing filters in reporting period`() {
             val actionsByFilters = mapOf(connectedToTarget(Host("A")) to onSourceConnected(emitter))
             val lines = listOf(
                 LogLine(Timestamp(0), Host("omega"), Host("B")),
@@ -139,8 +223,8 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                Report(emptySet()),
-                Report(setOf(Host("alpha"))),
+                Report(sources = emptySet()),
+                Report(sources = setOf(Host("alpha"))),
             )
         }
 
@@ -158,40 +242,11 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                Report(setOf(Host("alpha"))),
-                Report(emptySet()),
-                Report(emptySet()),
-                Report(setOf(Host("beta"))),
+                Report(sources = setOf(Host("alpha"))),
+                Report(sources = emptySet()),
+                Report(sources = emptySet()),
+                Report(sources = setOf(Host("beta"))),
             )
         }
-
-        val lines = listOf(
-            LogLine(Timestamp(0), Host("Akos"), Host("Aaronjosh")),
-            LogLine(Timestamp(100), Host("Shaquera"), Host("Aaliayh")),
-            LogLine(Timestamp(200), Host("Jacquis"), Host("Aaronjosh")),
-            LogLine(Timestamp(300), Host("Keeshaun"), Host("Aaronjosh")),
-            LogLine(Timestamp(400), Host("Terryn"), Host("Aaliayh")),
-            LogLine(Timestamp(700), Host("Theresamarie"), Host("Aaronjosh")),
-            LogLine(Timestamp(800), Host("Eddison"), Host("Aadison")),
-            LogLine(Timestamp(900), Host("Makaiya"), Host("Aaronjosh")),
-            LogLine(Timestamp(1000), Host("Glorimar"), Host("Aadison")),
-            LogLine(Timestamp(1100), Host("Ayania"), Host("Aaronjosh")),
-            LogLine(Timestamp(1200), Host("Dayonte"), Host("Aaliayh")),
-            LogLine(Timestamp(1400), Host("Suhanee"), Host("Aaronjosh")),
-            LogLine(Timestamp(1500), Host("Tashaya"), Host("Aadison")),
-            LogLine(Timestamp(1600), Host("Taquana"), Host("Aaronjosh")),
-            LogLine(Timestamp(1700), Host("Kyus"), Host("Aaliayh")),
-            LogLine(Timestamp(1800), Host("Azarel"), Host("Aaliayh")),
-            LogLine(Timestamp(1900), Host("Stephens"), Host("Aaronjosh")),
-            LogLine(Timestamp(2000), Host("Delona"), Host("Aadison")),
-            LogLine(Timestamp(2100), Host("Kayliyah"), Host("Aaronjosh")),
-            LogLine(Timestamp(2300), Host("Alexxis"), Host("Aaronjosh")),
-            LogLine(Timestamp(2400), Host("Cliff"), Host("Aaliayh")),
-            LogLine(Timestamp(2500), Host("Haileyjo"), Host("Aadison")),
-            LogLine(Timestamp(2900), Host("Evelyse"), Host("Aadison")),
-            LogLine(Timestamp(3000), Host("Nathanael"), Host("Aadison")),
-            LogLine(Timestamp(3300), Host("Ricquan"), Host("Aadison")),
-            LogLine(Timestamp(3500), Host("Adalhi"), Host("Aaliayh")),
-        )
     }
 }
