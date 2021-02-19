@@ -9,14 +9,14 @@ import log.Timestamp
 import java.io.File
 
 class FileLogReader(
-    private val logFileName: String,
+    private val logFile: File,
     timeout: Duration,
     private val pollingInterval: Duration = Duration(100)
 ) : LogReader {
     private val polls = timeout.ms / pollingInterval.ms
 
     override suspend fun readLines(action: (LogLine) -> Unit) {
-        File(logFileName).bufferedReader().use { reader ->
+        logFile.bufferedReader().use { reader ->
             var remainingPolls = polls
             do {
                 reader.lineSequence().forEach {
@@ -32,7 +32,7 @@ class FileLogReader(
     }
 
     override fun getInitialTimestamp(): Timestamp {
-        val line = File(logFileName).useLines { it.first() }
+        val line = logFile.useLines { it.first() }
         return parse(line).timestamp
     }
 

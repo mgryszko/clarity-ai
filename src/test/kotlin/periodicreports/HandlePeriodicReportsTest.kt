@@ -9,16 +9,17 @@ import log.LogLine
 import log.Timestamp
 import memory.ListLogReader
 import org.junit.jupiter.api.Nested
+import java.io.File
 import kotlin.test.Test
 
 class HandlePeriodicReportsTest {
     val reports = mutableListOf<Set<Host>>()
     val collector = ReportCollector(reports::add)
+    val logFile = File(javaClass.getResource("/input-file-10000.txt").path!!)
 
     @Nested
     inner class LogFromFile {
-        val logFileName = javaClass.getResource("/input-file-10000.txt").path!!
-        val handler = PeriodicReportsHandler(FileLogReader(logFileName, Duration(0)), collector)
+        val handler = PeriodicReportsHandler(FileLogReader(logFile, Duration(0)), collector)
         val oneHour = Duration(60 * 60 * 1000)
         val fiveMinutes = Duration(5 * 60 * 1000)
 
