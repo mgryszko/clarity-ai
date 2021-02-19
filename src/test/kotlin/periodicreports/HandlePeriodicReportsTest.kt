@@ -1,3 +1,5 @@
+package periodicreports
+
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.verbs.expect
 import file.FileLogReader
@@ -7,8 +9,6 @@ import log.LogLine
 import log.Timestamp
 import memory.ListLogReader
 import org.junit.jupiter.api.Nested
-import periodicreports.PeriodicReportsHandler
-import periodicreports.ReportCollector
 import kotlin.test.Test
 
 class HandlePeriodicReportsTest {
@@ -17,7 +17,7 @@ class HandlePeriodicReportsTest {
 
     @Nested
     inner class LogFromFile {
-        val logFileName = javaClass.getResource("input-file-10000.txt").path!!
+        val logFileName = javaClass.getResource("/input-file-10000.txt").path!!
         val handler = PeriodicReportsHandler(FileLogReader(logFileName), collector)
         val oneHour = Duration(60 * 60 * 1000)
         val fiveMinutes = Duration(5 * 60 * 1000)
