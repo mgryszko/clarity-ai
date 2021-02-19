@@ -1,12 +1,11 @@
 package periodicreports
 
 import log.Duration
-import log.Host
 import log.LogLine
 import log.Timestamp
 
 class PeriodicReportGenerator(
-    private val host: Host,
+    private val actionsByFilters: Map<LogLineFilter, LogLineAction>,
     initialTimestamp: Timestamp,
     private val reportPeriod: Duration,
     private val maxTolerableLag: Duration
@@ -14,7 +13,7 @@ class PeriodicReportGenerator(
     private var nextReportTimestamp = initialTimestamp + reportPeriod
     private var timestampHighWatermark = initialTimestamp
 
-    fun processLogLine(line: LogLine, collector: ReportCollector, actionsByFilters: Map<LogLineFilter, LogLineAction>) {
+    fun processLogLine(line: LogLine, collector: ReportCollector) {
         val (timestamp, _, _) = line
         if (timestamp >= nextReportTimestamp) {
             collector.emitReport()

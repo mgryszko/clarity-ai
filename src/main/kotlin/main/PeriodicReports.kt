@@ -10,6 +10,8 @@ import log.Duration
 import log.Host
 import periodicreports.PeriodicReportsHandler
 import periodicreports.ReportCollector
+import periodicreports.connectedToTarget
+import periodicreports.onSourceConnected
 import java.io.File
 
 class PeriodicReports : CliktCommand() {
@@ -25,8 +27,13 @@ class PeriodicReports : CliktCommand() {
     private val timeoutMs: Long by option("-t", "--timeout", help = "log inactivity timeout").long().default(thirtySeconds)
 
     override fun run() {
-        PeriodicReportsHandler(FileLogReader(File(logFileName), Duration(timeoutMs)), ReportCollector(::println)).handle(
-            Host(host),
+        PeriodicReportsHandler(
+            logReader = FileLogReader(File(logFileName), Duration(timeoutMs)),
+            collector = ReportCollector(::println),
+            actionsByFilters = mapOf(
+                connectedToTarget(Host(host)) to onSourceConnected(ReportCollector(::println))
+            )
+        ).handle(
             Duration(reportFreqMs),
             Duration(maxTolerableLagMs)
         )

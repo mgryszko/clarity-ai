@@ -19,14 +19,17 @@ class PeriodicReportsHandlerTest {
 
     @Nested
     inner class HandleLogFromFile {
-        val handler = PeriodicReportsHandler(FileLogReader(logFile, Duration(0)), collector)
+        val handler = PeriodicReportsHandler(
+            logReader = FileLogReader(logFile, Duration(0)),
+            collector = collector,
+            actionsByFilters = mapOf(connectedToTarget(Host("Aaliayh")) to onSourceConnected(collector))
+        )
         val oneHour = Duration(60 * 60 * 1000)
         val fiveMinutes = Duration(5 * 60 * 1000)
 
         @Test
         fun handle() {
             handler.handle(
-                host = Host("Aaliayh"),
                 reportPeriod = oneHour,
                 maxTolerableLag = fiveMinutes
             )
@@ -64,8 +67,9 @@ class PeriodicReportsHandlerTest {
     inner class HandleInMemoryLog {
         @Test
         fun `connected sources in all report periods`() {
-            PeriodicReportsHandler(ListLogReader(lines), collector).handle(
-                host = Host("Aadison"),
+            val actionsByFilters = mapOf(connectedToTarget(Host("Aadison")) to onSourceConnected(collector))
+
+            PeriodicReportsHandler(ListLogReader(lines), collector, actionsByFilters).handle(
                 reportPeriod = Duration(1000),
                 maxTolerableLag = Duration(0),
             )
@@ -80,14 +84,15 @@ class PeriodicReportsHandlerTest {
 
         @Test
         fun `repeated source hosts`() {
+            val actionsByFilters = mapOf(connectedToTarget(Host("A")) to onSourceConnected(collector))
             val lines = listOf(
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
                 LogLine(Timestamp(0), Host("beta"), Host("A")),
             )
-            PeriodicReportsHandler(ListLogReader(lines), collector).handle(
-                host = Host("A"),
+
+            PeriodicReportsHandler(ListLogReader(lines), collector, actionsByFilters).handle(
                 reportPeriod = Duration(1000),
                 maxTolerableLag = Duration(0),
             )
@@ -97,6 +102,7 @@ class PeriodicReportsHandlerTest {
 
         @Test
         fun `out of order entries`() {
+            val actionsByFilters = mapOf(connectedToTarget(Host("A")) to onSourceConnected(collector))
             val lines = listOf(
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
                 LogLine(Timestamp(200), Host("omega"), Host("B")),
@@ -108,8 +114,7 @@ class PeriodicReportsHandlerTest {
                 LogLine(Timestamp(397), Host("::"), Host("A")),
             )
 
-            PeriodicReportsHandler(ListLogReader(lines), collector).handle(
-                host = Host("A"),
+            PeriodicReportsHandler(ListLogReader(lines), collector, actionsByFilters).handle(
                 reportPeriod = Duration(500),
                 maxTolerableLag = Duration(2),
             )
@@ -121,14 +126,14 @@ class PeriodicReportsHandlerTest {
 
         @Test
         fun `no connected sources in reporting period`() {
+            val actionsByFilters = mapOf(connectedToTarget(Host("A")) to onSourceConnected(collector))
             val lines = listOf(
                 LogLine(Timestamp(0), Host("omega"), Host("B")),
                 LogLine(Timestamp(999), Host("omega"), Host("B")),
                 LogLine(Timestamp(1000), Host("alpha"), Host("A")),
             )
 
-            PeriodicReportsHandler(ListLogReader(lines), collector).handle(
-                host = Host("A"),
+            PeriodicReportsHandler(ListLogReader(lines), collector, actionsByFilters).handle(
                 reportPeriod = Duration(1000),
                 maxTolerableLag = Duration(0),
             )
@@ -141,13 +146,13 @@ class PeriodicReportsHandlerTest {
 
         @Test
         fun `no log lines in report periods`() {
+            val actionsByFilters = mapOf(connectedToTarget(Host("A")) to onSourceConnected(collector))
             val lines = listOf(
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
                 LogLine(Timestamp(3000), Host("beta"), Host("A")),
             )
 
-            PeriodicReportsHandler(ListLogReader(lines), collector).handle(
-                host = Host("A"),
+            PeriodicReportsHandler(ListLogReader(lines), collector, actionsByFilters).handle(
                 reportPeriod = Duration(1000),
                 maxTolerableLag = Duration(2),
             )
