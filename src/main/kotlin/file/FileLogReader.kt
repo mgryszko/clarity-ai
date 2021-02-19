@@ -31,9 +31,9 @@ class FileLogReader(
         }
     }
 
-    override fun firstLine(): LogLine {
+    override fun getInitialTimestamp(): Timestamp {
         val line = File(logFileName).useLines { it.first() }
-        return parse(line)
+        return parse(line).timestamp
     }
 
     private fun parse(line: String): LogLine {

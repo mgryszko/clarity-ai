@@ -10,7 +10,7 @@ class PeriodicReportsHandler(private val logReader: LogReader, private val colle
         runBlocking {
             val reportGenerator = PeriodicReportGenerator(
                 host = host,
-                initialTimestamp = logReader.firstLine().timestamp,
+                initialTimestamp = logReader.getInitialTimestamp(),
                 reportPeriod = reportPeriod,
                 maxTolerableLag = maxTolerableLag
             )
