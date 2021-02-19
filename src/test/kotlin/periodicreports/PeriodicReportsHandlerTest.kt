@@ -12,13 +12,13 @@ import org.junit.jupiter.api.Nested
 import java.io.File
 import kotlin.test.Test
 
-class HandlePeriodicReportsTest {
+class PeriodicReportsHandlerTest {
     val reports = mutableListOf<Set<Host>>()
     val collector = ReportCollector(reports::add)
     val logFile = File(javaClass.getResource("/input-file-10000.txt").path!!)
 
     @Nested
-    inner class LogFromFile {
+    inner class HandleLogFromFile {
         val handler = PeriodicReportsHandler(FileLogReader(logFile, Duration(0)), collector)
         val oneHour = Duration(60 * 60 * 1000)
         val fiveMinutes = Duration(5 * 60 * 1000)
@@ -61,7 +61,7 @@ class HandlePeriodicReportsTest {
     }
 
     @Nested
-    inner class InMemoryLog {
+    inner class HandleInMemoryLog {
         @Test
         fun `connected sources in all report periods`() {
             PeriodicReportsHandler(ListLogReader(lines), collector).handle(
