@@ -14,13 +14,11 @@ import kotlin.test.Test
 class FileLogReaderTest {
     @Nested
     inner class ReadLines {
-
         @Test
         fun `with timeout`() = runBlockingTest {
             val reader = FileLogReader(100.linesLogFile(), Duration(500), Duration(100))
-            var linesRead = 0
 
-            reader.readLines { linesRead++ }
+            val linesRead = countReadLines(reader)
 
             expect(linesRead).toBe(100)
             expect(currentTime).toBe(500)
@@ -29,12 +27,24 @@ class FileLogReaderTest {
         @Test
         fun `zero timeout`() = runBlockingTest {
             val reader = FileLogReader(1.linesLogFile(), Duration(0))
-            var linesRead = 0
 
-            reader.readLines { linesRead++ }
+            val linesRead = countReadLines(reader)
 
             expect(linesRead).toBe(1)
             expect(currentTime).toBe(0)
+        }
+
+        @Test
+        fun `empty file`() = runBlockingTest {
+            val reader = FileLogReader(0.linesLogFile(), Duration(0))
+
+            expect(countReadLines(reader)).toBe(0)
+        }
+
+        suspend fun countReadLines(reader: FileLogReader): Int {
+            var linesRead = 0
+            reader.readLines { linesRead++ }
+            return linesRead
         }
     }
 
@@ -46,7 +56,6 @@ class FileLogReaderTest {
 
             expect(reader.getInitialTimestamp()).toBe(Timestamp(0))
         }
-
     }
 
     fun Int.linesLogFile() = File.createTempFile("log", ".txt").let { file ->
