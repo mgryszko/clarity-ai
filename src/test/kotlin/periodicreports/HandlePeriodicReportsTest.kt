@@ -18,7 +18,7 @@ class HandlePeriodicReportsTest {
     @Nested
     inner class LogFromFile {
         val logFileName = javaClass.getResource("/input-file-10000.txt").path!!
-        val handler = PeriodicReportsHandler(FileLogReader(logFileName), collector)
+        val handler = PeriodicReportsHandler(FileLogReader(logFileName, Duration(0)), collector)
         val oneHour = Duration(60 * 60 * 1000)
         val fiveMinutes = Duration(5 * 60 * 1000)
 

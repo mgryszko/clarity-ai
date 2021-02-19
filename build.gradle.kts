@@ -31,6 +31,7 @@ dependencies {
     testImplementation(kotlin("test-junit5"))
     testImplementation("org.junit.jupiter:junit-jupiter:${Versions.junit}")
     testImplementation("ch.tutteli.atrium:atrium-fluent-en_GB:${Versions.atrium}")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.kotlinCoroutines}")
     testImplementation("io.mockk:mockk:${Versions.mockk}")
 }
 

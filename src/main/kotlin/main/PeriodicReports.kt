@@ -11,8 +11,9 @@ fun main(args: Array<String>) {
     val host = args[1]
     val reportPeriodMs = args[2].toLong()
     val maxTolerableLagMs = args[3].toLong()
+    val timeoutMs = 30000.toLong()
 
-    PeriodicReportsHandler(FileLogReader(logFileName), ReportCollector(::println)).handle(
+    PeriodicReportsHandler(FileLogReader(logFileName, Duration(timeoutMs)), ReportCollector(::println)).handle(
         Host(host),
         Duration(reportPeriodMs),
         Duration(maxTolerableLagMs)

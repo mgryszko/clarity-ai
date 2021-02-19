@@ -1,19 +1,33 @@
 package file
 
+import kotlinx.coroutines.delay
+import log.Duration
 import log.Host
 import log.LogLine
 import log.LogReader
 import log.Timestamp
 import java.io.File
 
-class FileLogReader(private val logFileName: String) : LogReader {
-    override fun readLines(action: (LogLine) -> Unit) {
+class FileLogReader(
+    private val logFileName: String,
+    timeout: Duration,
+    private val pollingInterval: Duration = Duration(100)
+) : LogReader {
+    private val polls = timeout.ms / pollingInterval.ms
+
+    override suspend fun readLines(action: (LogLine) -> Unit) {
         File(logFileName).bufferedReader().use { reader ->
-            var line: String?
+            var remainingPolls = polls
             do {
-                line = reader.readLine()
-                line?.let { action(parse(it)) }
-            } while (line != null)
+                reader.lineSequence().forEach {
+                    action(parse(it))
+                    remainingPolls = polls
+                }
+                if (remainingPolls > 0) {
+                    delay(pollingInterval.ms)
+                }
+                remainingPolls--
+            } while (remainingPolls > 0)
         }
     }
 
