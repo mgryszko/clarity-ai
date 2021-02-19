@@ -5,8 +5,6 @@ import log.Host
 import log.LogLine
 import log.Timestamp
 
-typealias LogLineAction = (LogLine) -> Unit
-
 class PeriodicReportGenerator(
     private val host: Host,
     initialTimestamp: Timestamp,
