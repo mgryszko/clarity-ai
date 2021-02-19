@@ -6,21 +6,22 @@ import log.LogReader
 
 class PeriodicReportsHandler(
     private val logReader: LogReader,
-    private val collector: ReportCollector,
+    private val emitter: ReportEmitter,
     private val actionsByFilters: Map<LogLineFilter, LogLineAction>
 ) {
     fun handle(reportPeriod: Duration, maxTolerableLag: Duration) {
         runBlocking {
             val reportGenerator = PeriodicReportGenerator(
+                emitter = emitter,
                 actionsByFilters = actionsByFilters,
                 initialTimestamp = logReader.getInitialTimestamp(),
                 reportPeriod = reportPeriod,
                 maxTolerableLag = maxTolerableLag
             )
             logReader.readLines { line ->
-                reportGenerator.processLogLine(line, collector)
+                reportGenerator.processLogLine(line)
             }
-            collector.emitReport()
+            emitter.emitReport()
         }
     }
 }

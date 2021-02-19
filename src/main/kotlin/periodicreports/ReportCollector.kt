@@ -4,7 +4,13 @@ import log.Host
 
 data class Report(val sources: Set<Host>)
 
-class ReportCollector(private val onReportReady: ((Report) -> Unit)) {
+interface ReportEmitter {
+    fun emitReport()
+
+    fun emitEmptyReports(count: Long)
+}
+
+class ReportCollector(private val onReportReady: ((Report) -> Unit)) : ReportEmitter {
     private val sourceHosts = mutableSetOf<Host>()
     private val emptyReport = Report(sources = emptySet())
 
@@ -12,13 +18,13 @@ class ReportCollector(private val onReportReady: ((Report) -> Unit)) {
         sourceHosts.add(source)
     }
 
-    fun emitReport() {
+    override fun emitReport() {
         onReportReady(Report(sources = sourceHosts.toSet()))
         sourceHosts.clear()
     }
 
     @Suppress("ForEachParameterNotUsed")
-    fun emitEmptyReports(count: Long) {
+    override fun emitEmptyReports(count: Long) {
         (0 until count).forEach {
             onReportReady(emptyReport)
         }

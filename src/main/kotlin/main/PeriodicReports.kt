@@ -29,7 +29,7 @@ class PeriodicReports : CliktCommand() {
     override fun run() {
         PeriodicReportsHandler(
             logReader = FileLogReader(File(logFileName), Duration(timeoutMs)),
-            collector = ReportCollector(::println),
+            emitter = ReportCollector(::println),
             actionsByFilters = mapOf(
                 connectedToTarget(Host(host)) to onSourceConnected(ReportCollector(::println))
             )
