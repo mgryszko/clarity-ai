@@ -5,6 +5,8 @@ import log.Host
 import log.LogLine
 import log.Timestamp
 
+typealias LogLineAction = (LogLine) -> Unit
+
 class PeriodicReportGenerator(
     private val host: Host,
     initialTimestamp: Timestamp,
@@ -14,8 +16,8 @@ class PeriodicReportGenerator(
     private var nextReportTimestamp = initialTimestamp + reportPeriod
     private var timestampHighWatermark = initialTimestamp
 
-    fun processLogLine(line: LogLine, collector: ReportCollector) {
-        val (timestamp, source, target) = line
+    fun processLogLine(line: LogLine, collector: ReportCollector, actionsByFilters: Map<LogLineFilter, LogLineAction>) {
+        val (timestamp, _, _) = line
         if (timestamp >= nextReportTimestamp) {
             collector.emitReport()
             val periodsWithNoLines = (timestamp / nextReportTimestamp) - 1
@@ -25,9 +27,7 @@ class PeriodicReportGenerator(
             nextReportTimestamp += reportPeriod
         }
         if (timestamp >= timestampHighWatermark - maxTolerableLag) {
-            if (target == host) {
-                collector.sourceHostConnected(source)
-            }
+            actionsByFilters.forEach { (filter, action) -> if (filter(line)) action(line) }
         }
         if (timestamp > timestampHighWatermark) {
             timestampHighWatermark = timestamp
