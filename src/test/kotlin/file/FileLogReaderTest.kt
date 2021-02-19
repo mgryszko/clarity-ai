@@ -5,31 +5,48 @@ import ch.tutteli.atrium.api.verbs.expect
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import log.Duration
+import log.Timestamp
+import org.junit.jupiter.api.Nested
 import java.io.File
 import kotlin.test.Test
 
 @ExperimentalCoroutinesApi
 class FileLogReaderTest {
-    @Test
-    fun `with timeout`() = runBlockingTest {
-        val reader = FileLogReader(100.linesLogFile(), Duration(500), Duration(100))
-        var linesRead = 0
+    @Nested
+    inner class ReadLines {
 
-        reader.readLines { linesRead++ }
+        @Test
+        fun `with timeout`() = runBlockingTest {
+            val reader = FileLogReader(100.linesLogFile(), Duration(500), Duration(100))
+            var linesRead = 0
 
-        expect(linesRead).toBe(100)
-        expect(currentTime).toBe(500)
+            reader.readLines { linesRead++ }
+
+            expect(linesRead).toBe(100)
+            expect(currentTime).toBe(500)
+        }
+
+        @Test
+        fun `zero timeout`() = runBlockingTest {
+            val reader = FileLogReader(1.linesLogFile(), Duration(0))
+            var linesRead = 0
+
+            reader.readLines { linesRead++ }
+
+            expect(linesRead).toBe(1)
+            expect(currentTime).toBe(0)
+        }
     }
 
-    @Test
-    fun `zero timeout`() = runBlockingTest {
-        val reader = FileLogReader(1.linesLogFile(), Duration(0))
-        var linesRead = 0
+    @Nested
+    inner class GetFirstTimestamp {
+        @Test
+        fun get() = runBlockingTest {
+            val reader = FileLogReader(1.linesLogFile(), Duration(0))
 
-        reader.readLines { linesRead++ }
+            expect(reader.getInitialTimestamp()).toBe(Timestamp(0))
+        }
 
-        expect(linesRead).toBe(10000)
-        expect(currentTime).toBe(0)
     }
 
     fun Int.linesLogFile() = File.createTempFile("log", ".txt").let { file ->
@@ -41,5 +58,4 @@ class FileLogReaderTest {
         }
         file
     }
-
 }
