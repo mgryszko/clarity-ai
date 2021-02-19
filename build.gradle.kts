@@ -1,3 +1,4 @@
+import Build_gradle.Versions.clikt
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
@@ -20,12 +21,14 @@ object Versions {
     const val atrium = "0.15.0"
     const val mockk = "1.10.6"
     const val kotlinCoroutines = "1.4.2"
+    const val clikt = "3.1.0"
 }
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.kotlinCoroutines}")
+    implementation("com.github.ajalt.clikt:clikt:${clikt}")
 
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit5"))
