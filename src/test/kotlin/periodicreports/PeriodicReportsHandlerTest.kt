@@ -179,10 +179,10 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                Report(topOutgoingConnections = Host("B")),
-                Report(topOutgoingConnections = Host("B")),
-                Report(topOutgoingConnections = Host("A")),
-                Report(topOutgoingConnections = Host("A")),
+                Report(topOutgoingConnections = setOf(Host("B"))),
+                Report(topOutgoingConnections = setOf(Host("B"))),
+                Report(topOutgoingConnections = setOf(Host("A"))),
+                Report(topOutgoingConnections = setOf(Host("A"), Host("C"))),
             )
         }
 
