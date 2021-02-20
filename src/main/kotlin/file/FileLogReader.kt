@@ -14,7 +14,7 @@ class LogEmptyException : RuntimeException("Log is empty")
 
 class FileLogReader(
     private val logFile: File,
-    timeout: Duration,
+    timeout: Duration = Duration(0),
     private val pollingInterval: Duration = Duration(100)
 ) : LogReader {
     private val polls = timeout.ms / pollingInterval.ms

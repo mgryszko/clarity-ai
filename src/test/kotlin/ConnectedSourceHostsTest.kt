@@ -6,19 +6,20 @@ import log.LogLine
 import log.Timestamp
 import connectedsources.ConnectedSourceHostsHandler
 import connectedsources.findSourceHosts
+import file.FileLogReader
+import java.io.File
 import kotlin.test.Test
 
 class HandleConnectedSourceHostsTest {
-    val handler = ConnectedSourceHostsHandler()
+    val logFileName = javaClass.getResource("/input-file-10000.txt").path
+    val handler = ConnectedSourceHostsHandler(FileLogReader(File(logFileName)))
 
     @Test
     fun `log from file, spying reports observer`() {
         var hosts: Set<Host>? = null
         val print: (Set<Host>) -> Unit = { hosts = it }
-        val logFileName = javaClass.getResource("input-file-10000.txt").path
 
         handler.handle(
-            logFileName = logFileName,
             target = "Aaliayh",
             fromMs = 1565656607767,
             toMs = 1565680778409,

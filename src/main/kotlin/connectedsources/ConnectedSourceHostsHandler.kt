@@ -1,18 +1,16 @@
 package connectedsources
 
-import file.FileLogReader
 import kotlinx.coroutines.runBlocking
-import log.Duration
 import log.Host
 import log.LogLine
+import log.LogReader
 import log.Timestamp
-import java.io.File
 
-class ConnectedSourceHostsHandler {
-    fun handle(logFileName: String, target: String, fromMs: Long, toMs: Long, onSourceHosts: (Set<Host>) -> Unit) {
+class ConnectedSourceHostsHandler(private val logReader: LogReader) {
+    fun handle(target: String, fromMs: Long, toMs: Long, onSourceHosts: (Set<Host>) -> Unit) {
         val logLines = mutableListOf<LogLine>()
         runBlocking {
-            FileLogReader(File(logFileName), Duration(0)).readLines { line -> logLines.add(line) }
+            logReader.readLines { line -> logLines.add(line) }
         }
         val hosts = findSourceHosts(
             lines = logLines.asSequence(),
