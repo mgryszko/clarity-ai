@@ -32,7 +32,7 @@ class PeriodicReports : CliktCommand() {
     private val timeoutMs: Long by option("-t", "--timeout", help = "log inactivity timeout").long().default(thirtySeconds)
 
     override fun run() {
-        val collector = ReportCollector(PrintStreamReportRenderer())
+        val collector = ReportCollector(PrintStreamReportRenderer(System.out))
         PeriodicReportsHandler(
             logReader = FileLogReader(File(logFileName), Duration(timeoutMs)),
             emitter = collector,
