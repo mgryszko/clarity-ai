@@ -44,12 +44,6 @@ private class TopCounter<K> {
     override fun toString(): String = "TopCounter(keysByCounters=$keysByCounters, countersByKeys=$countersByKeys)"
 }
 
-interface ReportEmitter {
-    fun emitReport()
-
-    fun emitEmptyReports(count: Long)
-}
-
 class ReportCollector(private val onReportReady: ((Report) -> Unit)) : ReportEmitter {
     private val outgoingConnectionsFromSources = mutableSetOf<Host>()
     private val incomingConnectionsToTargets = mutableSetOf<Host>()
