@@ -1,15 +1,12 @@
 package connectedsources
 
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.notToBeNull
 import ch.tutteli.atrium.api.verbs.expect
 import log.Host
 import log.LogLine
 import log.Timestamp
 import file.FileLogReader
 import memory.ListLogReader
-import periodicreports.CollectingReportRenderer
-import periodicreports.ReportCollector
 import java.io.File
 import kotlin.test.Test
 
@@ -19,17 +16,13 @@ class HandleConnectedSourceHostsTest {
 
     @Test
     fun `log from file, spying reports observer`() {
-        var hosts: Set<Host>? = null
-        val print: (Set<Host>) -> Unit = { hosts = it }
-
-        handler.handle(
+        val hosts = handler.handle(
             target = Host("Aaliayh"),
             from = Timestamp(1565656607767),
-            to = Timestamp(1565680778409),
-            onSourceHosts = print
+            to = Timestamp(1565680778409)
         )
 
-        expect(hosts).notToBeNull().containsExactly(
+        expect(hosts).containsExactly(
             Host("Shaquera"),
             Host("Zidan"),
             Host("Adalhi"),
@@ -38,17 +31,12 @@ class HandleConnectedSourceHostsTest {
 }
 
 class FindSourceHostsTest {
-    val renderer = CollectingReportRenderer()
-    val emitter = ReportCollector(renderer)
-
     @Test
     fun `exact timestamps`() {
-        var hosts = emptySet<Host>()
-        ConnectedSourceHostsHandler(ListLogReader(lines.toList())).handle(
+        val hosts = ConnectedSourceHostsHandler(ListLogReader(lines)).handle(
             target = Host("Aaliayh"),
             from = Timestamp(1565656607767),
             to = Timestamp(1565680778409),
-            onSourceHosts = { hosts = it },
         )
 
         expect(hosts).containsExactly(
@@ -60,12 +48,10 @@ class FindSourceHostsTest {
 
     @Test
     fun `timestamps expanded range by 1ms`() {
-        var hosts = emptySet<Host>()
-        ConnectedSourceHostsHandler(ListLogReader(lines.toList())).handle(
+        val hosts = ConnectedSourceHostsHandler(ListLogReader(lines)).handle(
             target = Host("Aaliayh"),
             from = Timestamp(1565656607766),
             to = Timestamp(1565680778410),
-            onSourceHosts = { hosts = it },
         )
 
         expect(hosts).containsExactly(
@@ -77,12 +63,10 @@ class FindSourceHostsTest {
 
     @Test
     fun `timestamps reduced range by 1ms`() {
-        var hosts = emptySet<Host>()
-        ConnectedSourceHostsHandler(ListLogReader(lines.toList())).handle(
+        val hosts = ConnectedSourceHostsHandler(ListLogReader(lines)).handle(
             target = Host("Aaliayh"),
             from = Timestamp(1565656607768),
             to = Timestamp(1565680778408),
-            onSourceHosts = { hosts = it },
         )
 
         expect(hosts).containsExactly(Host("Zidan"))
@@ -96,18 +80,16 @@ class FindSourceHostsTest {
             LogLine(Timestamp(0), Host("alpha"), Host("A")),
             LogLine(Timestamp(0), Host("beta"), Host("A")),
         )
-        var hosts = emptySet<Host>()
-        ConnectedSourceHostsHandler(ListLogReader(lines)).handle(
+        val hosts = ConnectedSourceHostsHandler(ListLogReader(lines)).handle(
             target = Host("A"),
             from = Timestamp(0),
             to = Timestamp(0),
-            onSourceHosts = { hosts = it },
         )
 
         expect(hosts).containsExactly(Host("alpha"), Host("beta"))
     }
 
-    val lines = sequenceOf(
+    val lines = listOf(
         LogLine(Timestamp(1565648096156), Host("Dristen"), Host("Aadison")),
         LogLine(Timestamp(1565648978434), Host("Glorimar"), Host("Aadison")),
         LogLine(Timestamp(1565657790599), Host("Nathanael"), Host("Aadison")),

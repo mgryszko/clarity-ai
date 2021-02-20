@@ -19,7 +19,7 @@ class ConnectedSourceHosts : CliktCommand() {
 
     override fun run() {
         ConnectedSourceHostsHandler(FileLogReader(File(logFileName)))
-            .handle(Host(target), Timestamp(fromMs), Timestamp(toMs)) { println(it) }
+            .handle(Host(target), Timestamp(fromMs), Timestamp(toMs)).let(::println)
     }
 }
 

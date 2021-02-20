@@ -6,7 +6,7 @@ import log.LogReader
 import log.Timestamp
 
 class ConnectedSourceHostsHandler(private val logReader: LogReader) {
-    fun handle(target: Host, from: Timestamp, to: Timestamp, onSourceHosts: (Set<Host>) -> Unit) {
+    fun handle(target: Host, from: Timestamp, to: Timestamp): Set<Host> {
         val hosts = mutableSetOf<Host>()
         runBlocking {
             logReader.readLines { (timestamp, source, lineTarget) ->
@@ -15,7 +15,6 @@ class ConnectedSourceHostsHandler(private val logReader: LogReader) {
                 }
             }
         }
-
-        onSourceHosts(hosts)
+        return hosts
     }
 }
