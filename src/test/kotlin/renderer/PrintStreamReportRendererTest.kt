@@ -20,6 +20,7 @@ class PrintStreamReportRendererTest {
             incomingFrom = setOf(Host("A"), Host("B")),
             outgoingTo = setOf(Host("C"), Host("D"), Host("E")),
             topOutgoing = setOf(Host("F"), Host("G")),
+            topOutgoingNumber = 3,
         )
 
         renderer.render(report)
@@ -30,7 +31,7 @@ class PrintStreamReportRendererTest {
             contains("1613806916032")
             contains("incoming connections: A, B")
             contains("outgoing connections: C, D, E")
-            contains("top outgoing connections: F, G")
+            contains("top outgoing connections: 3, from: F, G")
         }
     }
 }

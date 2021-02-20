@@ -189,10 +189,10 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                ConnectionReport(topOutgoing = setOf(Host("B")), timestamp = Timestamp(1000)),
-                ConnectionReport(topOutgoing = setOf(Host("B")), timestamp = Timestamp(2000)),
-                ConnectionReport(topOutgoing = setOf(Host("A")), timestamp = Timestamp(3000)),
-                ConnectionReport(topOutgoing = setOf(Host("A"), Host("C")), timestamp = Timestamp(4000)),
+                ConnectionReport(topOutgoing = setOf(Host("B")), topOutgoingNumber = 5, timestamp = Timestamp(1000)),
+                ConnectionReport(topOutgoing = setOf(Host("B")), topOutgoingNumber = 4, timestamp = Timestamp(2000)),
+                ConnectionReport(topOutgoing = setOf(Host("A")), topOutgoingNumber = 3, timestamp = Timestamp(3000)),
+                ConnectionReport(topOutgoing = setOf(Host("A"), Host("C")), topOutgoingNumber = 2, timestamp = Timestamp(4000)),
             )
         }
 

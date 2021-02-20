@@ -35,6 +35,8 @@ private class TopCounter<K> {
         }
     }
 
+    fun topCount(): Int = keysByCounters.lastEntry()?.key ?: 0
+
     fun topKeys(): Set<K> = keysByCounters.lastEntry()?.value ?: emptySet()
 
     fun clear() {
@@ -68,7 +70,8 @@ class ReportCollector(private val renderer: ReportRenderer) : ReportEmitter {
                 timestamp = timestamp,
                 incomingFrom = outgoingConnectionsFromSources.toSet(),
                 outgoingTo = incomingConnectionsToTargets.toSet(),
-                topOutgoing = topOutgoingConnections.topKeys()
+                topOutgoing = topOutgoingConnections.topKeys(),
+                topOutgoingNumber = topOutgoingConnections.topCount(),
             )
         )
         outgoingConnectionsFromSources.clear()
