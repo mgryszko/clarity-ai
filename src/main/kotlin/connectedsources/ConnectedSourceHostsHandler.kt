@@ -21,16 +21,16 @@ class ConnectedSourceHostsHandler(private val logReader: LogReader) {
 
         onSourceHosts(hosts)
     }
-}
 
-fun findSourceHosts(
-    lines: Sequence<LogLine>,
-    target: Host,
-    from: Timestamp,
-    to: Timestamp
-): Set<Host> = lines
-    .filter { (timestamp, _, lineTarget) ->
-        lineTarget == target && timestamp >= from && timestamp <= to
-    }
-    .map(LogLine::source)
-    .toSet()
+    private fun findSourceHosts(
+        lines: Sequence<LogLine>,
+        target: Host,
+        from: Timestamp,
+        to: Timestamp
+    ): Set<Host> = lines
+        .filter { (timestamp, _, lineTarget) ->
+            lineTarget == target && timestamp >= from && timestamp <= to
+        }
+        .map(LogLine::source)
+        .toSet()
+}
