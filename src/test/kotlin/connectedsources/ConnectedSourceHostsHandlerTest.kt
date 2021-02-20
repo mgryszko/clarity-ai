@@ -5,32 +5,10 @@ import ch.tutteli.atrium.api.verbs.expect
 import log.Host
 import log.LogLine
 import log.Timestamp
-import file.FileLogReader
 import memory.ListLogReader
-import java.io.File
 import kotlin.test.Test
 
-class HandleConnectedSourceHostsTest {
-    val logFileName = javaClass.getResource("/input-file-10000.txt").path!!
-    val handler = ConnectedSourceHostsHandler(FileLogReader(File(logFileName)))
-
-    @Test
-    fun `log from file, spying reports observer`() {
-        val hosts = handler.handle(
-            target = Host("Aaliayh"),
-            from = Timestamp(1565656607767),
-            to = Timestamp(1565680778409)
-        )
-
-        expect(hosts).containsExactly(
-            Host("Shaquera"),
-            Host("Zidan"),
-            Host("Adalhi"),
-        )
-    }
-}
-
-class FindSourceHostsTest {
+class ConnectedSourceHostsHandlerTest {
     @Test
     fun `exact timestamps`() {
         val hosts = ConnectedSourceHostsHandler(ListLogReader(lines)).handle(
