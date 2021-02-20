@@ -44,7 +44,7 @@ private class TopCounter<K> {
     override fun toString(): String = "TopCounter(keysByCounters=$keysByCounters, countersByKeys=$countersByKeys)"
 }
 
-class ReportCollector(private val onReportReady: ((Report) -> Unit)) : ReportEmitter {
+class ReportCollector(private val renderer: ReportRenderer) : ReportEmitter {
     private val outgoingConnectionsFromSources = mutableSetOf<Host>()
     private val incomingConnectionsToTargets = mutableSetOf<Host>()
     private val topOutgoingConnections = TopCounter<Host>()
@@ -63,7 +63,7 @@ class ReportCollector(private val onReportReady: ((Report) -> Unit)) : ReportEmi
     }
 
     override fun emitReport() {
-        onReportReady(
+        renderer.render(
             Report(
                 sources = outgoingConnectionsFromSources.toSet(),
                 targets = incomingConnectionsToTargets.toSet(),
@@ -78,7 +78,7 @@ class ReportCollector(private val onReportReady: ((Report) -> Unit)) : ReportEmi
     @Suppress("ForEachParameterNotUsed")
     override fun emitEmptyReports(count: Long) {
         (0 until count).forEach {
-            onReportReady(emptyReport)
+            renderer.render(emptyReport)
         }
     }
 }

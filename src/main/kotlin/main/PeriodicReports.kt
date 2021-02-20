@@ -16,6 +16,7 @@ import periodicreports.onOutgoingConnection
 import periodicreports.outgoingConnectionFromSource
 import periodicreports.pass
 import periodicreports.topOutgoingConnections
+import renderer.PrintStreamReportRenderer
 import java.io.File
 
 class PeriodicReports : CliktCommand() {
@@ -31,7 +32,7 @@ class PeriodicReports : CliktCommand() {
     private val timeoutMs: Long by option("-t", "--timeout", help = "log inactivity timeout").long().default(thirtySeconds)
 
     override fun run() {
-        val collector = ReportCollector(::println)
+        val collector = ReportCollector(PrintStreamReportRenderer())
         PeriodicReportsHandler(
             logReader = FileLogReader(File(logFileName), Duration(timeoutMs)),
             emitter = collector,

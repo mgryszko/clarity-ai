@@ -14,7 +14,11 @@ import kotlin.test.Test
 
 class PeriodicReportsHandlerTest {
     val reports = mutableListOf<Report>()
-    val emitter = ReportCollector(reports::add)
+    val emitter = ReportCollector(object : ReportRenderer {
+        override fun render(report: Report) {
+            reports.add(report)
+        }
+    })
     val logFile = File(javaClass.getResource("/input-file-10000.txt").path!!)
 
     @Nested
