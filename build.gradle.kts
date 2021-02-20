@@ -6,7 +6,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.4.30"
-    id("com.github.ben-manes.versions") version "0.36.0"
 
     application
 }
@@ -19,7 +18,6 @@ repositories {
 object Versions {
     const val junit = "5.7.0"
     const val atrium = "0.15.0"
-    const val mockk = "1.10.6"
     const val kotlinCoroutines = "1.4.2"
     const val clikt = "3.1.0"
 }
@@ -35,7 +33,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:${Versions.junit}")
     testImplementation("ch.tutteli.atrium:atrium-fluent-en_GB:${Versions.atrium}")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.kotlinCoroutines}")
-    testImplementation("io.mockk:mockk:${Versions.mockk}")
 }
 
 val kotlinOptions: KotlinJvmOptions.() -> Unit = {
