@@ -143,6 +143,7 @@ class PeriodicReportsHandlerTest {
             LogLine(Timestamp(700), Host("zeta"), Host("B")),
             LogLine(Timestamp(800), Host("eta"), Host("A")),
             LogLine(Timestamp(900), Host("theta"), Host("B")),
+
             LogLine(Timestamp(1000), Host("iota"), Host("A")),
             LogLine(Timestamp(1100), Host("kappa"), Host("B")),
             LogLine(Timestamp(1200), Host("lambda"), Host("C")),
@@ -152,18 +153,71 @@ class PeriodicReportsHandlerTest {
             LogLine(Timestamp(1700), Host("pi"), Host("C")),
             LogLine(Timestamp(1800), Host("rho"), Host("C")),
             LogLine(Timestamp(1900), Host("sigma"), Host("B")),
+
             LogLine(Timestamp(2000), Host("tau"), Host("A")),
             LogLine(Timestamp(2100), Host("upsilon"), Host("B")),
             LogLine(Timestamp(2300), Host("phi"), Host("B")),
             LogLine(Timestamp(2400), Host("chi"), Host("C")),
             LogLine(Timestamp(2500), Host("psi"), Host("A")),
             LogLine(Timestamp(2900), Host("omega"), Host("A")),
+
             LogLine(Timestamp(3000), Host("as"), Host("A")),
             LogLine(Timestamp(3300), Host("buki"), Host("A")),
             LogLine(Timestamp(3500), Host("vedi"), Host("C")),
         )
     }
 
+    @Nested
+    inner class TopConnectionSource {
+        @Test
+        fun `top source of connections`() {
+            val actionsByFilters = mapOf(pass to topOutgoingConnections(emitter))
+
+            PeriodicReportsHandler(ListLogReader(lines), emitter, actionsByFilters).handle(
+                reportPeriod = Duration(1000),
+                maxTolerableLag = Duration(0),
+            )
+
+            expect(reports).containsExactly(
+                Report(topSourceConnections = Host("B")),
+                Report(topSourceConnections = Host("B")),
+                Report(topSourceConnections = Host("A")),
+                Report(topSourceConnections = Host("A")),
+            )
+        }
+
+        val lines = listOf(
+            LogLine(Timestamp(0), Host("B"), Host("alpha")),
+            LogLine(Timestamp(100), Host("C"), Host("beta")),
+            LogLine(Timestamp(200), Host("B"), Host("gamma")),
+            LogLine(Timestamp(300), Host("B"), Host("delta")),
+            LogLine(Timestamp(400), Host("C"), Host("epsilon")),
+            LogLine(Timestamp(700), Host("B"), Host("zeta")),
+            LogLine(Timestamp(800), Host("A"), Host("eta")),
+            LogLine(Timestamp(900), Host("B"), Host("theta")),
+
+            LogLine(Timestamp(1000), Host("A"), Host("iota")),
+            LogLine(Timestamp(1100), Host("B"), Host("kappa")),
+            LogLine(Timestamp(1200), Host("C"), Host("lambda")),
+            LogLine(Timestamp(1400), Host("B"), Host("mu")),
+            LogLine(Timestamp(1500), Host("A"), Host("nu")),
+            LogLine(Timestamp(1600), Host("B"), Host("omicron")),
+            LogLine(Timestamp(1700), Host("C"), Host("pi")),
+            LogLine(Timestamp(1800), Host("C"), Host("rho")),
+            LogLine(Timestamp(1900), Host("B"), Host("sigma")),
+
+            LogLine(Timestamp(2000), Host("A"), Host("tau")),
+            LogLine(Timestamp(2100), Host("B"), Host("upsilon")),
+            LogLine(Timestamp(2300), Host("B"), Host("phi")),
+            LogLine(Timestamp(2400), Host("C"), Host("chi")),
+            LogLine(Timestamp(2500), Host("A"), Host("psi")),
+            LogLine(Timestamp(2900), Host("A"), Host("omega")),
+
+            LogLine(Timestamp(3000), Host("A"), Host("as")),
+            LogLine(Timestamp(3300), Host("A"), Host("buki")),
+            LogLine(Timestamp(3500), Host("C"), Host("vedi")),
+        )
+    }
     @Nested
     inner class CornerCases {
         @Test
