@@ -3,6 +3,7 @@ package renderer
 import ch.tutteli.atrium.api.fluent.en_GB.contains
 import ch.tutteli.atrium.api.verbs.expect
 import log.Host
+import log.Timestamp
 import org.junit.jupiter.api.Test
 import periodicreports.ConnectionReport
 import java.io.ByteArrayOutputStream
@@ -16,10 +17,10 @@ class PrintStreamReportRendererTest {
     @Test
     fun render() {
         val report = ConnectionReport(
+            timestamp = Timestamp(0),
             incomingFrom = setOf(Host("A"), Host("B")),
             outgoingTo = setOf(Host("C"), Host("D"), Host("E")),
             topOutgoing = setOf(Host("F"), Host("G")),
-            timestamp = null,
         )
 
         renderer.render(report)

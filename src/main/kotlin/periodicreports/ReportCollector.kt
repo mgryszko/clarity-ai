@@ -49,7 +49,6 @@ class ReportCollector(private val renderer: ReportRenderer) : ReportEmitter {
     private val outgoingConnectionsFromSources = mutableSetOf<Host>()
     private val incomingConnectionsToTargets = mutableSetOf<Host>()
     private val topOutgoingConnections = TopCounter<Host>()
-    private val emptyReport = ConnectionReport()
 
     fun outgoingConnectionFrom(source: Host) {
         outgoingConnectionsFromSources.add(source)
@@ -77,7 +76,7 @@ class ReportCollector(private val renderer: ReportRenderer) : ReportEmitter {
         topOutgoingConnections.clear()
     }
 
-    override fun emitEmptyReport() {
-        renderer.render(emptyReport)
+    override fun emitEmptyReport(timestamp: Timestamp) {
+        renderer.render(ConnectionReport(timestamp = timestamp))
     }
 }

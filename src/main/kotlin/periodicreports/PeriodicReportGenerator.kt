@@ -16,24 +16,36 @@ class PeriodicReportGenerator(
 
     fun processLogLine(line: LogLine) {
         val (timestamp, _, _) = line
-        if (timestamp >= nextReportTimestamp) {
+        if (shouldEmitReports(timestamp)) {
             emitter.emitReport(nextReportTimestamp)
             emitReportsForGaps(timestamp)
-            nextReportTimestamp += reportPeriod
+            advanceNextReportTimestamp()
         }
-        if (timestamp >= timestampHighWatermark - maxTolerableLag) {
+        if (withinTolerableLag(timestamp)) {
             actionsByFilters.forEach { (filter, action) -> if (filter(line)) action(line) }
         }
-        if (timestamp > timestampHighWatermark) {
-            timestampHighWatermark = timestamp
-        }
+        updateTimestampHighWatermark(timestamp)
     }
+
+    private fun shouldEmitReports(timestamp: Timestamp) = timestamp >= nextReportTimestamp
+
+    private fun withinTolerableLag(timestamp: Timestamp) = timestamp >= timestampHighWatermark - maxTolerableLag
 
     private fun emitReportsForGaps(timestamp: Timestamp) {
         val periodsWithNoLines = (timestamp / nextReportTimestamp) - 1
         repeat(periodsWithNoLines.toInt()) {
-            emitter.emitEmptyReport()
-            nextReportTimestamp += reportPeriod
+            advanceNextReportTimestamp()
+            emitter.emitEmptyReport(nextReportTimestamp)
+        }
+    }
+
+    private fun advanceNextReportTimestamp() {
+        nextReportTimestamp += reportPeriod
+    }
+
+    private fun updateTimestampHighWatermark(timestamp: Timestamp) {
+        if (timestamp > timestampHighWatermark) {
+            timestampHighWatermark = timestamp
         }
     }
 
