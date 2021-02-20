@@ -168,9 +168,9 @@ class PeriodicReportsHandlerTest {
     }
 
     @Nested
-    inner class TopConnectionSource {
+    inner class TopOutgoingConnections {
         @Test
-        fun `top source of connections`() {
+        fun `top outgoing connections`() {
             val actionsByFilters = mapOf(pass to topOutgoingConnections(emitter))
 
             PeriodicReportsHandler(ListLogReader(lines), emitter, actionsByFilters).handle(
@@ -179,10 +179,10 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                Report(topSourceConnections = Host("B")),
-                Report(topSourceConnections = Host("B")),
-                Report(topSourceConnections = Host("A")),
-                Report(topSourceConnections = Host("A")),
+                Report(topOutgoingConnections = Host("B")),
+                Report(topOutgoingConnections = Host("B")),
+                Report(topOutgoingConnections = Host("A")),
+                Report(topOutgoingConnections = Host("A")),
             )
         }
 

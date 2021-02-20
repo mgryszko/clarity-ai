@@ -3,7 +3,7 @@ package periodicreports
 import log.Host
 import java.util.*
 
-data class Report(val sources: Set<Host> = emptySet(), val targets: Set<Host> = emptySet(), val topSourceConnections: Host? = null)
+data class Report(val sources: Set<Host> = emptySet(), val targets: Set<Host> = emptySet(), val topOutgoingConnections: Host? = null)
 
 // Data structure allowing counting and retrieving the top key in log(n) time
 private class TopCounter<K> {
@@ -71,7 +71,7 @@ class ReportCollector(private val onReportReady: ((Report) -> Unit)) : ReportEmi
     }
 
     override fun emitReport() {
-        onReportReady(Report(sources = sourceHosts.toSet(), targets = targetHosts.toSet(), topSourceConnections = topOutgoingConnections.topKey()))
+        onReportReady(Report(sources = sourceHosts.toSet(), targets = targetHosts.toSet(), topOutgoingConnections = topOutgoingConnections.topKey()))
         sourceHosts.clear()
         targetHosts.clear()
         topOutgoingConnections.clear()
