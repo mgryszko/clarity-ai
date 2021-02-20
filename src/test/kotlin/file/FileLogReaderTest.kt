@@ -1,6 +1,7 @@
 package file
 
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.fluent.en_GB.toThrow
 import ch.tutteli.atrium.api.verbs.expect
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -60,6 +61,16 @@ class FileLogReaderTest {
             expect(countReadLines(reader)).toBe(2)
         }
 
+        @Test
+        fun `wrong format`() {
+            expect {
+                runBlockingTest {
+                    val reader = FileLogReader(tempFile { it.writeText("1 source") }, Duration(0))
+                    countReadLines(reader)
+                }
+            }.toThrow<UnparseableLogLineException>()
+        }
+
         suspend fun countReadLines(reader: FileLogReader): Int {
             var linesRead = 0
             reader.readLines { linesRead++ }
@@ -89,6 +100,16 @@ class FileLogReaderTest {
             val reader = FileLogReader(file, Duration(0))
 
             expect(reader.getInitialTimestamp()).toBe(Timestamp(100))
+        }
+
+        @Test
+        fun `empty file`() {
+            expect {
+                runBlockingTest {
+                    val reader = FileLogReader(tempFile { }, Duration(0))
+                    reader.getInitialTimestamp()
+                }
+            }.toThrow<LogEmptyException>()
         }
     }
 

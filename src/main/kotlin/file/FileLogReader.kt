@@ -7,7 +7,10 @@ import log.LogLine
 import log.LogReader
 import log.Timestamp
 import java.io.File
-import java.lang.IllegalStateException
+
+class UnparseableLogLineException(line: String, cause: Throwable) : RuntimeException("Line $line not parseable", cause)
+
+class LogEmptyException : RuntimeException("Log is empty")
 
 class FileLogReader(
     private val logFile: File,
@@ -21,7 +24,10 @@ class FileLogReader(
             var remainingPolls = polls
             do {
                 reader.lineSequence().forEach { line ->
-                    parse(line)?.let { action(it) }
+                    runCatching {
+                        parse(line)?.let { action(it) }
+                    }.onFailure { e -> throw UnparseableLogLineException(line, e) }
+
                     remainingPolls = polls
                 }
                 if (remainingPolls > 0) {
@@ -34,9 +40,9 @@ class FileLogReader(
 
     override fun getInitialTimestamp(): Timestamp {
         val line = logFile.useLines {
-            it.filter(String::isNotBlank).first()
+            it.filter(String::isNotBlank).firstOrNull()
         }
-        return parse(line)?.timestamp ?: throw IllegalStateException("Log file must contain at least one parseable line")
+        return line?.let { parse(it)?.timestamp } ?: throw LogEmptyException()
     }
 
     private fun parse(line: String): LogLine? =
