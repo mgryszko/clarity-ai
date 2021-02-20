@@ -16,7 +16,10 @@ class PeriodicReportsAcceptanceTest {
     val handler = PeriodicReportsHandler(
         logReader = FileLogReader(logFile, Duration(0)),
         emitter = emitter,
-        actionsByFilters = mapOf(incomingConnectionToTarget(Host("Aaliayh")) to onOutgoingConnection(emitter))
+        actionsByFilters = mapOf(
+            incomingConnectionToTarget(Host("Aaliayh")) to onOutgoingConnection(emitter),
+            outgoingConnectionFromSource(Host("Shaian")) to onIncomingConnection(emitter),
+        )
     )
     val oneHour = Duration(60 * 60 * 1000)
     val fiveMinutes = Duration(5 * 60 * 1000)
@@ -29,30 +32,30 @@ class PeriodicReportsAcceptanceTest {
         )
 
         expect(renderer.reports).containsExactly(
-            ConnectionReport(incomingFrom = emptySet(), timestamp = Timestamp(1565650804351)),
-            ConnectionReport(incomingFrom = setOf(Host("Dayonte")), timestamp = Timestamp(1565654404351)),
-            ConnectionReport(incomingFrom = setOf(Host("Shaquera")), timestamp = Timestamp(1565658004351)),
-            ConnectionReport(incomingFrom = emptySet(), timestamp = Timestamp(1565661604351)),
-            ConnectionReport(incomingFrom = emptySet(), timestamp = Timestamp(1565665204351)),
-            ConnectionReport(incomingFrom = emptySet(), timestamp = Timestamp(1565668804351)),
-            ConnectionReport(incomingFrom = setOf(Host("Zidan")), timestamp = Timestamp(1565672404351)),
-            ConnectionReport(incomingFrom = emptySet(), timestamp = Timestamp(1565676004351)),
-            ConnectionReport(incomingFrom = emptySet(), timestamp = Timestamp(1565679604351)),
-            ConnectionReport(incomingFrom = setOf(Host("Adalhi"), Host("Terryn")), timestamp = Timestamp(1565683204351)),
-            ConnectionReport(incomingFrom = setOf(Host("Kyus")), timestamp = Timestamp(1565686804351)),
-            ConnectionReport(incomingFrom = setOf(Host("Taison")), timestamp = Timestamp(1565690404351)),
-            ConnectionReport(incomingFrom = emptySet(), timestamp = Timestamp(1565694004351)),
-            ConnectionReport(incomingFrom = emptySet(), timestamp = Timestamp(1565697604351)),
-            ConnectionReport(incomingFrom = setOf(Host("Cliff")), timestamp = Timestamp(1565701204351)),
-            ConnectionReport(incomingFrom = emptySet(), timestamp = Timestamp(1565704804351)),
-            ConnectionReport(incomingFrom = emptySet(), timestamp = Timestamp(1565708404351)),
-            ConnectionReport(incomingFrom = emptySet(), timestamp = Timestamp(1565712004351)),
-            ConnectionReport(incomingFrom = emptySet(), timestamp = Timestamp(1565715604351)),
-            ConnectionReport(incomingFrom = setOf(Host("Ivy")), timestamp = Timestamp(1565719204351)),
-            ConnectionReport(incomingFrom = emptySet(), timestamp = Timestamp(1565722804351)),
-            ConnectionReport(incomingFrom = setOf(Host("Azarel")), timestamp = Timestamp(1565726404351)),
-            ConnectionReport(incomingFrom = emptySet(), timestamp = Timestamp(1565730004351)),
-            ConnectionReport(incomingFrom = emptySet(), timestamp = Timestamp(1565733604351)),
+            ConnectionReport(timestamp = Timestamp(1565650804351)),
+            ConnectionReport(timestamp = Timestamp(1565654404351), incomingFrom = setOf(Host("Dayonte"))),
+            ConnectionReport(timestamp = Timestamp(1565658004351), incomingFrom = setOf(Host("Shaquera"))),
+            ConnectionReport(timestamp = Timestamp(1565661604351)),
+            ConnectionReport(timestamp = Timestamp(1565665204351), outgoingTo = setOf(Host("Prue"))),
+            ConnectionReport(timestamp = Timestamp(1565668804351)),
+            ConnectionReport(timestamp = Timestamp(1565672404351), incomingFrom = setOf(Host("Zidan"))),
+            ConnectionReport(timestamp = Timestamp(1565676004351)),
+            ConnectionReport(timestamp = Timestamp(1565679604351)),
+            ConnectionReport(timestamp = Timestamp(1565683204351), incomingFrom = setOf(Host("Adalhi"), Host("Terryn"))),
+            ConnectionReport(timestamp = Timestamp(1565686804351), incomingFrom = setOf(Host("Kyus"))),
+            ConnectionReport(timestamp = Timestamp(1565690404351), incomingFrom = setOf(Host("Taison"))),
+            ConnectionReport(timestamp = Timestamp(1565694004351)),
+            ConnectionReport(timestamp = Timestamp(1565697604351), outgoingTo = setOf(Host("Heshy"))),
+            ConnectionReport(timestamp = Timestamp(1565701204351), incomingFrom = setOf(Host("Cliff"))),
+            ConnectionReport(timestamp = Timestamp(1565704804351), outgoingTo = setOf(Host("Maryanne"))),
+            ConnectionReport(timestamp = Timestamp(1565708404351)),
+            ConnectionReport(timestamp = Timestamp(1565712004351)),
+            ConnectionReport(timestamp = Timestamp(1565715604351)),
+            ConnectionReport(timestamp = Timestamp(1565719204351), incomingFrom = setOf(Host("Ivy"))),
+            ConnectionReport(timestamp = Timestamp(1565722804351), outgoingTo = setOf(Host("Rownan"))),
+            ConnectionReport(timestamp = Timestamp(1565726404351), incomingFrom = setOf(Host("Azarel")), outgoingTo = setOf(Host("Kesler"))),
+            ConnectionReport(timestamp = Timestamp(1565730004351)),
+            ConnectionReport(timestamp = Timestamp(1565733604351)),
         )
     }
 }
