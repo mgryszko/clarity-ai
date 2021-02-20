@@ -1,6 +1,7 @@
 package periodicreports
 
 import log.Host
+import log.Timestamp
 import java.util.*
 
 // Data structure allowing counting and retrieving the top key in log(n) time
@@ -62,9 +63,10 @@ class ReportCollector(private val renderer: ReportRenderer) : ReportEmitter {
         topOutgoingConnections.increment(source)
     }
 
-    override fun emitReport() {
+    override fun emitReport(timestamp: Timestamp) {
         renderer.render(
             ConnectionReport(
+                timestamp = timestamp,
                 incomingFrom = outgoingConnectionsFromSources.toSet(),
                 outgoingTo = incomingConnectionsToTargets.toSet(),
                 topOutgoing = topOutgoingConnections.topKeys()
@@ -75,10 +77,7 @@ class ReportCollector(private val renderer: ReportRenderer) : ReportEmitter {
         topOutgoingConnections.clear()
     }
 
-    @Suppress("ForEachParameterNotUsed")
-    override fun emitEmptyReports(count: Long) {
-        (0 until count).forEach {
-            renderer.render(emptyReport)
-        }
+    override fun emitEmptyReport() {
+        renderer.render(emptyReport)
     }
 }

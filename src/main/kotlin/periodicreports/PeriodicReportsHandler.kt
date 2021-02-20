@@ -21,7 +21,7 @@ class PeriodicReportsHandler(
             logReader.readLines { line ->
                 reportGenerator.processLogLine(line)
             }
-            emitter.emitReport()
+            reportGenerator.noMoreLines()
         }
     }
 }

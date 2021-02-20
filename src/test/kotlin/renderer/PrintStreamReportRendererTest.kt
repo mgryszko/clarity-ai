@@ -19,6 +19,7 @@ class PrintStreamReportRendererTest {
             incomingFrom = setOf(Host("A"), Host("B")),
             outgoingTo = setOf(Host("C"), Host("D"), Host("E")),
             topOutgoing = setOf(Host("F"), Host("G")),
+            timestamp = null,
         )
 
         renderer.render(report)

@@ -1,7 +1,9 @@
 package periodicreports
 
-interface ReportEmitter {
-    fun emitReport()
+import log.Timestamp
 
-    fun emitEmptyReports(count: Long)
+interface ReportEmitter {
+    fun emitReport(timestamp: Timestamp)
+
+    fun emitEmptyReport()
 }

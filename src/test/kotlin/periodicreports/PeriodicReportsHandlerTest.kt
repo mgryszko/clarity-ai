@@ -39,30 +39,30 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                ConnectionReport(emptySet()),
-                ConnectionReport(setOf(Host("Dayonte"))),
-                ConnectionReport(setOf(Host("Shaquera"))),
-                ConnectionReport(emptySet()),
-                ConnectionReport(emptySet()),
-                ConnectionReport(emptySet()),
-                ConnectionReport(setOf(Host("Zidan"))),
-                ConnectionReport(emptySet()),
-                ConnectionReport(emptySet()),
-                ConnectionReport(setOf(Host("Adalhi"), Host("Terryn"))),
-                ConnectionReport(setOf(Host("Kyus"))),
-                ConnectionReport(setOf(Host("Taison"))),
-                ConnectionReport(emptySet()),
-                ConnectionReport(emptySet()),
-                ConnectionReport(setOf(Host("Cliff"))),
-                ConnectionReport(emptySet()),
-                ConnectionReport(emptySet()),
-                ConnectionReport(emptySet()),
-                ConnectionReport(emptySet()),
-                ConnectionReport(setOf(Host("Ivy"))),
-                ConnectionReport(emptySet()),
-                ConnectionReport(setOf(Host("Azarel"))),
-                ConnectionReport(emptySet()),
-                ConnectionReport(emptySet()),
+                ConnectionReport(emptySet(), timestamp = Timestamp(1565650804351)),
+                ConnectionReport(setOf(Host("Dayonte")), timestamp = Timestamp(1565654404351)),
+                ConnectionReport(setOf(Host("Shaquera")), timestamp = Timestamp(1565658004351)),
+                ConnectionReport(emptySet(), timestamp = Timestamp(1565661604351)),
+                ConnectionReport(emptySet(), timestamp = Timestamp(1565665204351)),
+                ConnectionReport(emptySet(), timestamp = Timestamp(1565668804351)),
+                ConnectionReport(setOf(Host("Zidan")), timestamp = Timestamp(1565672404351)),
+                ConnectionReport(emptySet(), timestamp = Timestamp(1565676004351)),
+                ConnectionReport(emptySet(), timestamp = Timestamp(1565679604351)),
+                ConnectionReport(setOf(Host("Adalhi"), Host("Terryn")), timestamp = Timestamp(1565683204351)),
+                ConnectionReport(setOf(Host("Kyus")), timestamp = Timestamp(1565686804351)),
+                ConnectionReport(setOf(Host("Taison")), timestamp = Timestamp(1565690404351)),
+                ConnectionReport(emptySet(), timestamp = Timestamp(1565694004351)),
+                ConnectionReport(emptySet(), timestamp = Timestamp(1565697604351)),
+                ConnectionReport(setOf(Host("Cliff")), timestamp = Timestamp(1565701204351)),
+                ConnectionReport(emptySet(), timestamp = Timestamp(1565704804351)),
+                ConnectionReport(emptySet(), timestamp = Timestamp(1565708404351)),
+                ConnectionReport(emptySet(), timestamp = Timestamp(1565712004351)),
+                ConnectionReport(emptySet(), timestamp = Timestamp(1565715604351)),
+                ConnectionReport(setOf(Host("Ivy")), timestamp = Timestamp(1565719204351)),
+                ConnectionReport(emptySet(), timestamp = Timestamp(1565722804351)),
+                ConnectionReport(setOf(Host("Azarel")), timestamp = Timestamp(1565726404351)),
+                ConnectionReport(emptySet(), timestamp = Timestamp(1565730004351)),
+                ConnectionReport(emptySet(), timestamp = Timestamp(1565733604351)),
             )
         }
     }
@@ -79,10 +79,13 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                ConnectionReport(outgoingTo = setOf(Host("eta"))),
-                ConnectionReport(outgoingTo = setOf(Host("iota"), Host("nu"))),
-                ConnectionReport(outgoingTo = setOf(Host("tau"), Host("psi"), Host("omega"))),
-                ConnectionReport(outgoingTo = setOf(Host("as"), Host("buki"))),
+                ConnectionReport(outgoingTo = setOf(Host("eta")), timestamp = Timestamp(1000)),
+                ConnectionReport(outgoingTo = setOf(Host("iota"), Host("nu")), timestamp = Timestamp(2000)),
+                ConnectionReport(
+                    outgoingTo = setOf(Host("tau"), Host("psi"), Host("omega")),
+                    timestamp = Timestamp(3000)
+                ),
+                ConnectionReport(outgoingTo = setOf(Host("as"), Host("buki")), timestamp = Timestamp(4000)),
             )
         }
 
@@ -131,10 +134,13 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                ConnectionReport(incomingFrom = setOf(Host("eta"))),
-                ConnectionReport(incomingFrom = setOf(Host("iota"), Host("nu"))),
-                ConnectionReport(incomingFrom = setOf(Host("tau"), Host("psi"), Host("omega"))),
-                ConnectionReport(incomingFrom = setOf(Host("as"), Host("buki"))),
+                ConnectionReport(incomingFrom = setOf(Host("eta")), timestamp = Timestamp(1000)),
+                ConnectionReport(incomingFrom = setOf(Host("iota"), Host("nu")), timestamp = Timestamp(2000)),
+                ConnectionReport(
+                    incomingFrom = setOf(Host("tau"), Host("psi"), Host("omega")),
+                    timestamp = Timestamp(3000)
+                ),
+                ConnectionReport(incomingFrom = setOf(Host("as"), Host("buki")), timestamp = Timestamp(4000)),
             )
         }
 
@@ -183,10 +189,10 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                ConnectionReport(topOutgoing = setOf(Host("B"))),
-                ConnectionReport(topOutgoing = setOf(Host("B"))),
-                ConnectionReport(topOutgoing = setOf(Host("A"))),
-                ConnectionReport(topOutgoing = setOf(Host("A"), Host("C"))),
+                ConnectionReport(topOutgoing = setOf(Host("B")), timestamp = Timestamp(1000)),
+                ConnectionReport(topOutgoing = setOf(Host("B")), timestamp = Timestamp(2000)),
+                ConnectionReport(topOutgoing = setOf(Host("A")), timestamp = Timestamp(3000)),
+                ConnectionReport(topOutgoing = setOf(Host("A"), Host("C")), timestamp = Timestamp(4000)),
             )
         }
 
@@ -223,6 +229,7 @@ class PeriodicReportsHandlerTest {
             LogLine(Timestamp(3500), Host("C"), Host("::")),
         )
     }
+
     @Nested
     inner class CornerCases {
         @Test
@@ -240,7 +247,12 @@ class PeriodicReportsHandlerTest {
                 maxTolerableLag = Duration(0),
             )
 
-            expect(reports).containsExactly(ConnectionReport(incomingFrom = setOf(Host("alpha"), Host("beta"))))
+            expect(reports).containsExactly(
+                ConnectionReport(
+                    incomingFrom = setOf(Host("alpha"), Host("beta")),
+                    timestamp = Timestamp(1000)
+                )
+            )
         }
 
         @Test
@@ -263,7 +275,10 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                ConnectionReport(incomingFrom = setOf(Host("alpha"), Host("beta"), Host("gamma"))),
+                ConnectionReport(
+                    incomingFrom = setOf(Host("alpha"), Host("beta"), Host("gamma")),
+                    timestamp = Timestamp(500)
+                ),
             )
         }
 
@@ -282,8 +297,8 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                ConnectionReport(incomingFrom = emptySet()),
-                ConnectionReport(incomingFrom = setOf(Host("alpha"))),
+                ConnectionReport(incomingFrom = emptySet(), timestamp = Timestamp(1000)),
+                ConnectionReport(incomingFrom = setOf(Host("alpha")), timestamp = Timestamp(2000)),
             )
         }
 
@@ -301,10 +316,10 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                ConnectionReport(incomingFrom = setOf(Host("alpha"))),
-                ConnectionReport(incomingFrom = emptySet()),
-                ConnectionReport(incomingFrom = emptySet()),
-                ConnectionReport(incomingFrom = setOf(Host("beta"))),
+                ConnectionReport(incomingFrom = setOf(Host("alpha")), timestamp = Timestamp(1000)),
+                ConnectionReport(incomingFrom = emptySet(), timestamp = null),
+                ConnectionReport(incomingFrom = emptySet(), timestamp = null),
+                ConnectionReport(incomingFrom = setOf(Host("beta")), timestamp = Timestamp(4000)),
             )
         }
     }
