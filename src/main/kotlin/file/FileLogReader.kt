@@ -10,8 +10,6 @@ import java.io.File
 
 class UnparseableLogLineException(line: String, cause: Throwable) : RuntimeException("Line $line not parseable", cause)
 
-class LogEmptyException : RuntimeException("Log is empty")
-
 class FileLogReader(
     private val logFile: File,
     timeout: Duration = Duration(0),
