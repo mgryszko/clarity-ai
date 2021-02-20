@@ -7,7 +7,8 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.long
 import connectedsources.ConnectedSourceHostsHandler
 import file.FileLogReader
-import log.Duration
+import log.Host
+import log.Timestamp
 import java.io.File
 
 class ConnectedSourceHosts : CliktCommand() {
@@ -18,7 +19,7 @@ class ConnectedSourceHosts : CliktCommand() {
 
     override fun run() {
         ConnectedSourceHostsHandler(FileLogReader(File(logFileName)))
-            .handle(target, fromMs, toMs) { println(it) }
+            .handle(Host(target), Timestamp(fromMs), Timestamp(toMs)) { println(it) }
     }
 }
 

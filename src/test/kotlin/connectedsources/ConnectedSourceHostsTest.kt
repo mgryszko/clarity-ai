@@ -23,9 +23,9 @@ class HandleConnectedSourceHostsTest {
         val print: (Set<Host>) -> Unit = { hosts = it }
 
         handler.handle(
-            target = "Aaliayh",
-            fromMs = 1565656607767,
-            toMs = 1565680778409,
+            target = Host("Aaliayh"),
+            from = Timestamp(1565656607767),
+            to = Timestamp(1565680778409),
             onSourceHosts = print
         )
 
@@ -45,9 +45,9 @@ class FindSourceHostsTest {
     fun `exact timestamps`() {
         var hosts = emptySet<Host>()
         ConnectedSourceHostsHandler(ListLogReader(lines.toList())).handle(
-            target = Host("Aaliayh").name,
-            fromMs = Timestamp(1565656607767).instant,
-            toMs = Timestamp(1565680778409).instant,
+            target = Host("Aaliayh"),
+            from = Timestamp(1565656607767),
+            to = Timestamp(1565680778409),
             onSourceHosts = { hosts = it },
         )
 
@@ -62,9 +62,9 @@ class FindSourceHostsTest {
     fun `timestamps expanded range by 1ms`() {
         var hosts = emptySet<Host>()
         ConnectedSourceHostsHandler(ListLogReader(lines.toList())).handle(
-            target = Host("Aaliayh").name,
-            fromMs = Timestamp(1565656607766).instant,
-            toMs = Timestamp(1565680778410).instant,
+            target = Host("Aaliayh"),
+            from = Timestamp(1565656607766),
+            to = Timestamp(1565680778410),
             onSourceHosts = { hosts = it },
         )
 
@@ -79,9 +79,9 @@ class FindSourceHostsTest {
     fun `timestamps reduced range by 1ms`() {
         var hosts = emptySet<Host>()
         ConnectedSourceHostsHandler(ListLogReader(lines.toList())).handle(
-            target = Host("Aaliayh").name,
-            fromMs = Timestamp(1565656607768).instant,
-            toMs = Timestamp(1565680778408).instant,
+            target = Host("Aaliayh"),
+            from = Timestamp(1565656607768),
+            to = Timestamp(1565680778408),
             onSourceHosts = { hosts = it },
         )
 
@@ -98,9 +98,9 @@ class FindSourceHostsTest {
         )
         var hosts = emptySet<Host>()
         ConnectedSourceHostsHandler(ListLogReader(lines)).handle(
-            target = Host("A").name,
-            fromMs = Timestamp(0).instant,
-            toMs = Timestamp(0).instant,
+            target = Host("A"),
+            from = Timestamp(0),
+            to = Timestamp(0),
             onSourceHosts = { hosts = it },
         )
 
