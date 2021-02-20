@@ -3,8 +3,6 @@ package periodicreports
 import log.Host
 import java.util.*
 
-data class Report(val sources: Set<Host> = emptySet(), val targets: Set<Host> = emptySet(), val topOutgoingConnections: Host? = null)
-
 // Data structure allowing counting and retrieving the top key in log(n) time
 private class TopCounter<K> {
     private val keysByCounters = TreeMap<Int, Set<K>>()
