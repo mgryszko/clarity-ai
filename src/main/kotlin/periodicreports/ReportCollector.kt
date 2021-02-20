@@ -5,15 +5,28 @@ import java.util.*
 
 data class Report(val sources: Set<Host> = emptySet(), val targets: Set<Host> = emptySet(), val topSourceConnections: Host? = null)
 
+// Data structure allowing counting and retrieving the top key in log(n) time
 private class TopCounter<K> {
     private val keysByCounters = TreeMap<Int, Set<K>>()
     private val countersByKeys = mutableMapOf<K, Int>()
 
     fun increment(key: K) {
         val count = countersByKeys.getOrDefault(key, 0)
-        val keys = keysByCounters.getOrDefault(count, emptySet())
 
         countersByKeys[key] = count + 1
+
+        removeKeyFromCounter(key, count)
+        addKeyToCounter(key, count + 1)
+    }
+
+    private fun addKeyToCounter(key: K, count: Int) {
+        keysByCounters.putIfAbsent(count, emptySet())
+        keysByCounters.computeIfPresent(count) { _, keys -> keys + key }
+    }
+
+    private fun removeKeyFromCounter(key: K, count: Int) {
+        val keys = keysByCounters.getOrDefault(count, emptySet())
+        // optimization - don't keep empty sets in memory
         (keys - key).let {
             if (it.isEmpty()) {
                 keysByCounters.remove(count)
@@ -21,9 +34,6 @@ private class TopCounter<K> {
                 keysByCounters[count] = it
             }
         }
-
-        val keysToUpdate = keysByCounters.getOrDefault(count + 1, emptySet())
-        keysByCounters[count + 1] = keysToUpdate + key
     }
 
     fun topKey(): K? = keysByCounters.lastEntry()?.value?.firstOrNull()
