@@ -13,9 +13,9 @@ import java.io.File
 import kotlin.test.Test
 
 class PeriodicReportsHandlerTest {
-    val reports = mutableListOf<Report>()
+    val reports = mutableListOf<ConnectionReport>()
     val emitter = ReportCollector(object : ReportRenderer {
-        override fun render(report: Report) {
+        override fun render(report: ConnectionReport) {
             reports.add(report)
         }
     })
@@ -39,30 +39,30 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                Report(emptySet()),
-                Report(setOf(Host("Dayonte"))),
-                Report(setOf(Host("Shaquera"))),
-                Report(emptySet()),
-                Report(emptySet()),
-                Report(emptySet()),
-                Report(setOf(Host("Zidan"))),
-                Report(emptySet()),
-                Report(emptySet()),
-                Report(setOf(Host("Adalhi"), Host("Terryn"))),
-                Report(setOf(Host("Kyus"))),
-                Report(setOf(Host("Taison"))),
-                Report(emptySet()),
-                Report(emptySet()),
-                Report(setOf(Host("Cliff"))),
-                Report(emptySet()),
-                Report(emptySet()),
-                Report(emptySet()),
-                Report(emptySet()),
-                Report(setOf(Host("Ivy"))),
-                Report(emptySet()),
-                Report(setOf(Host("Azarel"))),
-                Report(emptySet()),
-                Report(emptySet()),
+                ConnectionReport(emptySet()),
+                ConnectionReport(setOf(Host("Dayonte"))),
+                ConnectionReport(setOf(Host("Shaquera"))),
+                ConnectionReport(emptySet()),
+                ConnectionReport(emptySet()),
+                ConnectionReport(emptySet()),
+                ConnectionReport(setOf(Host("Zidan"))),
+                ConnectionReport(emptySet()),
+                ConnectionReport(emptySet()),
+                ConnectionReport(setOf(Host("Adalhi"), Host("Terryn"))),
+                ConnectionReport(setOf(Host("Kyus"))),
+                ConnectionReport(setOf(Host("Taison"))),
+                ConnectionReport(emptySet()),
+                ConnectionReport(emptySet()),
+                ConnectionReport(setOf(Host("Cliff"))),
+                ConnectionReport(emptySet()),
+                ConnectionReport(emptySet()),
+                ConnectionReport(emptySet()),
+                ConnectionReport(emptySet()),
+                ConnectionReport(setOf(Host("Ivy"))),
+                ConnectionReport(emptySet()),
+                ConnectionReport(setOf(Host("Azarel"))),
+                ConnectionReport(emptySet()),
+                ConnectionReport(emptySet()),
             )
         }
     }
@@ -79,10 +79,10 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                Report(targets = setOf(Host("eta"))),
-                Report(targets = setOf(Host("iota"), Host("nu"))),
-                Report(targets = setOf(Host("tau"), Host("psi"), Host("omega"))),
-                Report(targets = setOf(Host("as"), Host("buki"))),
+                ConnectionReport(outgoingTo = setOf(Host("eta"))),
+                ConnectionReport(outgoingTo = setOf(Host("iota"), Host("nu"))),
+                ConnectionReport(outgoingTo = setOf(Host("tau"), Host("psi"), Host("omega"))),
+                ConnectionReport(outgoingTo = setOf(Host("as"), Host("buki"))),
             )
         }
 
@@ -131,10 +131,10 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                Report(sources = setOf(Host("eta"))),
-                Report(sources = setOf(Host("iota"), Host("nu"))),
-                Report(sources = setOf(Host("tau"), Host("psi"), Host("omega"))),
-                Report(sources = setOf(Host("as"), Host("buki"))),
+                ConnectionReport(incomingFrom = setOf(Host("eta"))),
+                ConnectionReport(incomingFrom = setOf(Host("iota"), Host("nu"))),
+                ConnectionReport(incomingFrom = setOf(Host("tau"), Host("psi"), Host("omega"))),
+                ConnectionReport(incomingFrom = setOf(Host("as"), Host("buki"))),
             )
         }
 
@@ -183,10 +183,10 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                Report(topOutgoingConnections = setOf(Host("B"))),
-                Report(topOutgoingConnections = setOf(Host("B"))),
-                Report(topOutgoingConnections = setOf(Host("A"))),
-                Report(topOutgoingConnections = setOf(Host("A"), Host("C"))),
+                ConnectionReport(topOutgoing = setOf(Host("B"))),
+                ConnectionReport(topOutgoing = setOf(Host("B"))),
+                ConnectionReport(topOutgoing = setOf(Host("A"))),
+                ConnectionReport(topOutgoing = setOf(Host("A"), Host("C"))),
             )
         }
 
@@ -240,7 +240,7 @@ class PeriodicReportsHandlerTest {
                 maxTolerableLag = Duration(0),
             )
 
-            expect(reports).containsExactly(Report(sources = setOf(Host("alpha"), Host("beta"))))
+            expect(reports).containsExactly(ConnectionReport(incomingFrom = setOf(Host("alpha"), Host("beta"))))
         }
 
         @Test
@@ -263,7 +263,7 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                Report(sources = setOf(Host("alpha"), Host("beta"), Host("gamma"))),
+                ConnectionReport(incomingFrom = setOf(Host("alpha"), Host("beta"), Host("gamma"))),
             )
         }
 
@@ -282,8 +282,8 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                Report(sources = emptySet()),
-                Report(sources = setOf(Host("alpha"))),
+                ConnectionReport(incomingFrom = emptySet()),
+                ConnectionReport(incomingFrom = setOf(Host("alpha"))),
             )
         }
 
@@ -301,10 +301,10 @@ class PeriodicReportsHandlerTest {
             )
 
             expect(reports).containsExactly(
-                Report(sources = setOf(Host("alpha"))),
-                Report(sources = emptySet()),
-                Report(sources = emptySet()),
-                Report(sources = setOf(Host("beta"))),
+                ConnectionReport(incomingFrom = setOf(Host("alpha"))),
+                ConnectionReport(incomingFrom = emptySet()),
+                ConnectionReport(incomingFrom = emptySet()),
+                ConnectionReport(incomingFrom = setOf(Host("beta"))),
             )
         }
     }
