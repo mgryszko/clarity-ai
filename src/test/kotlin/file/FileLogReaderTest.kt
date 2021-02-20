@@ -12,6 +12,8 @@ import kotlin.test.Test
 
 @ExperimentalCoroutinesApi
 class FileLogReaderTest {
+    private val blank = " \t  "
+
     @Nested
     inner class ReadLines {
         @Test
@@ -41,6 +43,23 @@ class FileLogReaderTest {
             expect(countReadLines(reader)).toBe(0)
         }
 
+        @Test
+        fun `blank lines`() = runBlockingTest {
+            val file = tempFile { file ->
+                file.printWriter().use { writer ->
+                    writer.println()
+                    writer.println("1 :: ::")
+                    writer.println()
+                    writer.println("1 :: ::")
+                    writer.println(blank)
+                    writer.println()
+                }
+            }
+            val reader = FileLogReader(file, Duration(0))
+
+            expect(countReadLines(reader)).toBe(2)
+        }
+
         suspend fun countReadLines(reader: FileLogReader): Int {
             var linesRead = 0
             reader.readLines { linesRead++ }
@@ -51,20 +70,40 @@ class FileLogReaderTest {
     @Nested
     inner class GetFirstTimestamp {
         @Test
-        fun get() = runBlockingTest {
+        fun `without first blank lines`() = runBlockingTest {
             val reader = FileLogReader(1.linesLogFile(), Duration(0))
 
             expect(reader.getInitialTimestamp()).toBe(Timestamp(0))
         }
+
+        @Test
+        fun `with first blank lines`() = runBlockingTest {
+            val file = tempFile { file ->
+                file.printWriter().use { writer ->
+                    writer.println()
+                    writer.println(blank)
+                    writer.println("100 :: ::")
+                }
+            }
+
+            val reader = FileLogReader(file, Duration(0))
+
+            expect(reader.getInitialTimestamp()).toBe(Timestamp(100))
+        }
     }
 
-    fun Int.linesLogFile() = File.createTempFile("log", ".txt").let { file ->
-        file.deleteOnExit()
+    fun Int.linesLogFile() = tempFile { file ->
         file.printWriter().use { writer ->
             repeat(this) { timestamp ->
                 writer.println("$timestamp source target")
             }
         }
-        file
     }
+
+    fun tempFile(block: (File) -> Unit): File =
+        File.createTempFile("log", ".txt").let { file ->
+            file.deleteOnExit()
+            block(file)
+            file
+        }
 }
