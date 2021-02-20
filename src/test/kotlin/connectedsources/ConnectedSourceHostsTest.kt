@@ -1,17 +1,17 @@
+package connectedsources
+
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.notToBeNull
 import ch.tutteli.atrium.api.verbs.expect
 import log.Host
 import log.LogLine
 import log.Timestamp
-import connectedsources.ConnectedSourceHostsHandler
-import connectedsources.findSourceHosts
 import file.FileLogReader
 import java.io.File
 import kotlin.test.Test
 
 class HandleConnectedSourceHostsTest {
-    val logFileName = javaClass.getResource("/input-file-10000.txt").path
+    val logFileName = javaClass.getResource("/input-file-10000.txt").path!!
     val handler = ConnectedSourceHostsHandler(FileLogReader(File(logFileName)))
 
     @Test
