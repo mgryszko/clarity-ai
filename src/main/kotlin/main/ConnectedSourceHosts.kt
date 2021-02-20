@@ -1,6 +1,8 @@
 package main
 
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.context
+import com.github.ajalt.clikt.output.CliktHelpFormatter
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
@@ -13,10 +15,13 @@ import log.Timestamp
 import java.io.File
 
 class ConnectedSourceHosts : CliktCommand() {
+    init {
+        context { helpFormatter = CliktHelpFormatter(showDefaultValues = true) }
+    }
     private val logFileName: String by argument(name = "LOG_FILE_NAME", help = "log file name")
     private val target: String by argument(help = "search target of incoming connections")
-    private val fromMs: Long by option("-f", "--from", help = "timestamp from inclusive").long().default(0)
-    private val toMs: Long by option("-t", "--to", help = "timestamp to inclusive").long().default(Long.MAX_VALUE)
+    private val fromMs: Long by option("-f", "--from", help = "timestamp from inclusive [ms]").long().default(0)
+    private val toMs: Long by option("-t", "--to", help = "timestamp to inclusive [ms]").long().default(Long.MAX_VALUE)
 
     override fun run() = runBlocking {
         ConnectedSourceHostsHandler(FileLogReader(File(logFileName)))
