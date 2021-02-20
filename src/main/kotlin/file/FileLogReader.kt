@@ -38,13 +38,6 @@ class FileLogReader(
         }
     }
 
-    override fun getInitialTimestamp(): Timestamp {
-        val line = logFile.useLines {
-            it.filter(String::isNotBlank).firstOrNull()
-        }
-        return line?.let { parse(it)?.timestamp } ?: throw LogEmptyException()
-    }
-
     private fun parse(line: String): LogLine? =
         if (line.isNotBlank()) {
             val (timestamp, source, target) = line.split(" ")

@@ -14,7 +14,6 @@ class PeriodicReportsHandler(
             val reportGenerator = PeriodicReportGenerator(
                 emitter = emitter,
                 actionsByFilters = actionsByFilters,
-                initialTimestamp = logReader.getInitialTimestamp(),
                 reportPeriod = reportPeriod,
                 maxTolerableLag = maxTolerableLag
             )
