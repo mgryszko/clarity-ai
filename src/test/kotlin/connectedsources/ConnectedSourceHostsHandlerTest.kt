@@ -13,42 +13,53 @@ class ConnectedSourceHostsHandlerTest {
     @Test
     fun `exact timestamps`() {
         val hosts = ConnectedSourceHostsHandler(ListLogReader(lines)).handle(
-            target = Host("Aaliayh"),
-            from = Timestamp(1565656607767),
-            to = Timestamp(1565680778409),
+            target = Host("A"),
+            from = Timestamp(130),
+            to = Timestamp(150),
         )
 
         expect(hosts).containsExactly(
-            Host("Shaquera"),
-            Host("Zidan"),
-            Host("Adalhi"),
+            Host("13"),
+            Host("14"),
+            Host("15"),
         )
     }
 
     @Test
     fun `timestamps expanded range by 1ms`() {
         val hosts = ConnectedSourceHostsHandler(ListLogReader(lines)).handle(
-            target = Host("Aaliayh"),
-            from = Timestamp(1565656607766),
-            to = Timestamp(1565680778410),
+            target = Host("A"),
+            from = Timestamp(129),
+            to = Timestamp(151),
         )
 
         expect(hosts).containsExactly(
-            Host("Shaquera"),
-            Host("Zidan"),
-            Host("Adalhi"),
+            Host("13"),
+            Host("14"),
+            Host("15"),
         )
     }
 
     @Test
     fun `timestamps reduced range by 1ms`() {
         val hosts = ConnectedSourceHostsHandler(ListLogReader(lines)).handle(
-            target = Host("Aaliayh"),
-            from = Timestamp(1565656607768),
-            to = Timestamp(1565680778408),
+            target = Host("A"),
+            from = Timestamp(131),
+            to = Timestamp(149),
         )
 
-        expect(hosts).containsExactly(Host("Zidan"))
+        expect(hosts).containsExactly(Host("14"))
+    }
+
+    @Test
+    fun `host not found`() {
+        val hosts = ConnectedSourceHostsHandler(ListLogReader(lines)).handle(
+            target = Host("notFound"),
+            from = Timestamp(0),
+            to = Timestamp(Long.MAX_VALUE),
+        )
+
+        expect(hosts).isEmpty()
     }
 
     @Test
@@ -80,41 +91,41 @@ class ConnectedSourceHostsHandlerTest {
     }
 
     val lines = listOf(
-        LogLine(Timestamp(1565648096156), Host("Dristen"), Host("Aadison")),
-        LogLine(Timestamp(1565648978434), Host("Glorimar"), Host("Aadison")),
-        LogLine(Timestamp(1565657790599), Host("Nathanael"), Host("Aadison")),
-        LogLine(Timestamp(1565678376783), Host("Evelyse"), Host("Aadison")),
-        LogLine(Timestamp(1565681584555), Host("Delona"), Host("Aadison")),
-        LogLine(Timestamp(1565699872298), Host("Ricquan"), Host("Aadison")),
-        LogLine(Timestamp(1565705846562), Host("Dominiq"), Host("Aadison")),
-        LogLine(Timestamp(1565708805274), Host("Eddison"), Host("Aadison")),
-        LogLine(Timestamp(1565714852680), Host("Tashaya"), Host("Aadison")),
-        LogLine(Timestamp(1565716538865), Host("Kynlie"), Host("Aadison")),
-        LogLine(Timestamp(1565719178421), Host("Melik"), Host("Aadison")),
-        LogLine(Timestamp(1565731189448), Host("Haileyjo"), Host("Aadison")),
-        LogLine(Timestamp(1565653852901), Host("Dayonte"), Host("Aaliayh")),
-        LogLine(Timestamp(1565656607767), Host("Shaquera"), Host("Aaliayh")),
-        LogLine(Timestamp(1565670330430), Host("Zidan"), Host("Aaliayh")),
-        LogLine(Timestamp(1565680778409), Host("Adalhi"), Host("Aaliayh")),
-        LogLine(Timestamp(1565681406500), Host("Terryn"), Host("Aaliayh")),
-        LogLine(Timestamp(1565685740554), Host("Kyus"), Host("Aaliayh")),
-        LogLine(Timestamp(1565687038949), Host("Taison"), Host("Aaliayh")),
-        LogLine(Timestamp(1565699899082), Host("Cliff"), Host("Aaliayh")),
-        LogLine(Timestamp(1565717675105), Host("Ivy"), Host("Aaliayh")),
-        LogLine(Timestamp(1565724303383), Host("Azarel"), Host("Aaliayh")),
-        LogLine(Timestamp(1565647634157), Host("Stephens"), Host("Aaronjosh")),
-        LogLine(Timestamp(1565649189199), Host("Keeshaun"), Host("Aaronjosh")),
-        LogLine(Timestamp(1565650785776), Host("Alexxis"), Host("Aaronjosh")),
-        LogLine(Timestamp(1565652933212), Host("Makaiya"), Host("Aaronjosh")),
-        LogLine(Timestamp(1565654551392), Host("Ayania"), Host("Aaronjosh")),
-        LogLine(Timestamp(1565654641363), Host("Lizbett"), Host("Aaronjosh")),
-        LogLine(Timestamp(1565658001662), Host("Theresamarie"), Host("Aaronjosh")),
-        LogLine(Timestamp(1565663289300), Host("Taquana"), Host("Aaronjosh")),
-        LogLine(Timestamp(1565679979203), Host("Akos"), Host("Aaronjosh")),
-        LogLine(Timestamp(1565688191672), Host("Suhanee"), Host("Aaronjosh")),
-        LogLine(Timestamp(1565718906076), Host("Jacquis"), Host("Aaronjosh")),
-        LogLine(Timestamp(1565719660124), Host("Kayliyah"), Host("Aaronjosh")),
-        LogLine(Timestamp(1565722415638), Host("Genai"), Host("Aaronjosh")),
-        LogLine(Timestamp(1565725831679), Host("Maleya"), Host("Aaronjosh")),
+        LogLine(Timestamp(0), Host("0"), Host("B")),
+        LogLine(Timestamp(10), Host("1"), Host("B")),
+        LogLine(Timestamp(20), Host("2"), Host("B")),
+        LogLine(Timestamp(30), Host("3"), Host("B")),
+        LogLine(Timestamp(40), Host("4"), Host("B")),
+        LogLine(Timestamp(50), Host("5"), Host("B")),
+        LogLine(Timestamp(60), Host("6"), Host("B")),
+        LogLine(Timestamp(70), Host("7"), Host("B")),
+        LogLine(Timestamp(80), Host("8"), Host("B")),
+        LogLine(Timestamp(90), Host("9"), Host("B")),
+        LogLine(Timestamp(100), Host("10"), Host("B")),
+        LogLine(Timestamp(110), Host("11"), Host("B")),
+        LogLine(Timestamp(120), Host("12"), Host("A")),
+        LogLine(Timestamp(130), Host("13"), Host("A")),
+        LogLine(Timestamp(140), Host("14"), Host("A")),
+        LogLine(Timestamp(150), Host("15"), Host("A")),
+        LogLine(Timestamp(160), Host("16"), Host("A")),
+        LogLine(Timestamp(170), Host("17"), Host("A")),
+        LogLine(Timestamp(180), Host("18"), Host("A")),
+        LogLine(Timestamp(190), Host("19"), Host("A")),
+        LogLine(Timestamp(200), Host("20"), Host("A")),
+        LogLine(Timestamp(210), Host("21"), Host("A")),
+        LogLine(Timestamp(220), Host("22"), Host("C")),
+        LogLine(Timestamp(230), Host("23"), Host("C")),
+        LogLine(Timestamp(240), Host("24"), Host("C")),
+        LogLine(Timestamp(250), Host("25"), Host("C")),
+        LogLine(Timestamp(260), Host("26"), Host("C")),
+        LogLine(Timestamp(270), Host("27"), Host("C")),
+        LogLine(Timestamp(280), Host("28"), Host("C")),
+        LogLine(Timestamp(290), Host("29"), Host("C")),
+        LogLine(Timestamp(300), Host("30"), Host("C")),
+        LogLine(Timestamp(310), Host("31"), Host("C")),
+        LogLine(Timestamp(320), Host("32"), Host("C")),
+        LogLine(Timestamp(330), Host("33"), Host("C")),
+        LogLine(Timestamp(340), Host("34"), Host("C")),
+        LogLine(Timestamp(350), Host("35"), Host("C")),
     )
 }
