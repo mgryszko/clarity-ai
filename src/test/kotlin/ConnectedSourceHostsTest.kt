@@ -4,18 +4,20 @@ import ch.tutteli.atrium.api.verbs.expect
 import log.Host
 import log.LogLine
 import log.Timestamp
-import main.findSourceHosts
-import main.handleConnectedSourceHosts
+import connectedsources.ConnectedSourceHostsHandler
+import connectedsources.findSourceHosts
 import kotlin.test.Test
 
 class HandleConnectedSourceHostsTest {
+    val handler = ConnectedSourceHostsHandler()
+
     @Test
     fun `log from file, spying reports observer`() {
         var hosts: Set<Host>? = null
         val print: (Set<Host>) -> Unit = { hosts = it }
         val logFileName = javaClass.getResource("input-file-10000.txt").path
 
-        handleConnectedSourceHosts(
+        handler.handle(
             logFileName = logFileName,
             target = "Aaliayh",
             fromMs = 1565656607767,
