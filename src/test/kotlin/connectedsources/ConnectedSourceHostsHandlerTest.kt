@@ -1,7 +1,7 @@
 package connectedsources
 
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import log.Host
 import log.LogLine
@@ -18,10 +18,12 @@ class ConnectedSourceHostsHandlerTest {
             to = Timestamp(150),
         )
 
-        expect(hosts).containsExactly(
-            Host("13"),
-            Host("14"),
-            Host("15"),
+        expect(hosts).toBe(
+            setOf(
+                Host("13"),
+                Host("14"),
+                Host("15"),
+            )
         )
     }
 
@@ -33,10 +35,12 @@ class ConnectedSourceHostsHandlerTest {
             to = Timestamp(151),
         )
 
-        expect(hosts).containsExactly(
-            Host("13"),
-            Host("14"),
-            Host("15"),
+        expect(hosts).toBe(
+            setOf(
+                Host("13"),
+                Host("14"),
+                Host("15"),
+            )
         )
     }
 
@@ -48,7 +52,7 @@ class ConnectedSourceHostsHandlerTest {
             to = Timestamp(149),
         )
 
-        expect(hosts).containsExactly(Host("14"))
+        expect(hosts).toBe(setOf(Host("14")))
     }
 
     @Test
@@ -76,7 +80,7 @@ class ConnectedSourceHostsHandlerTest {
             to = Timestamp(0),
         )
 
-        expect(hosts).containsExactly(Host("alpha"), Host("beta"))
+        expect(hosts).toBe(setOf(Host("alpha"), Host("beta")))
     }
 
     @Test
@@ -91,41 +95,41 @@ class ConnectedSourceHostsHandlerTest {
     }
 
     val lines = listOf(
-        LogLine(Timestamp(0), Host("0"), Host("B")),
-        LogLine(Timestamp(10), Host("1"), Host("B")),
-        LogLine(Timestamp(20), Host("2"), Host("B")),
-        LogLine(Timestamp(30), Host("3"), Host("B")),
-        LogLine(Timestamp(40), Host("4"), Host("B")),
-        LogLine(Timestamp(50), Host("5"), Host("B")),
-        LogLine(Timestamp(60), Host("6"), Host("B")),
-        LogLine(Timestamp(70), Host("7"), Host("B")),
-        LogLine(Timestamp(80), Host("8"), Host("B")),
         LogLine(Timestamp(90), Host("9"), Host("B")),
+        LogLine(Timestamp(140), Host("14"), Host("A")),
+        LogLine(Timestamp(210), Host("21"), Host("A")),
+        LogLine(Timestamp(330), Host("33"), Host("C")),
+        LogLine(Timestamp(160), Host("16"), Host("A")),
+        LogLine(Timestamp(150), Host("15"), Host("A")),
         LogLine(Timestamp(100), Host("10"), Host("B")),
-        LogLine(Timestamp(110), Host("11"), Host("B")),
+        LogLine(Timestamp(170), Host("17"), Host("A")),
+        LogLine(Timestamp(50), Host("5"), Host("B")),
+        LogLine(Timestamp(270), Host("27"), Host("C")),
+        LogLine(Timestamp(300), Host("30"), Host("C")),
+        LogLine(Timestamp(180), Host("18"), Host("A")),
+        LogLine(Timestamp(70), Host("7"), Host("B")),
+        LogLine(Timestamp(30), Host("3"), Host("B")),
+        LogLine(Timestamp(80), Host("8"), Host("B")),
+        LogLine(Timestamp(240), Host("24"), Host("C")),
+        LogLine(Timestamp(340), Host("34"), Host("C")),
+        LogLine(Timestamp(20), Host("2"), Host("B")),
+        LogLine(Timestamp(10), Host("1"), Host("B")),
+        LogLine(Timestamp(200), Host("20"), Host("A")),
+        LogLine(Timestamp(40), Host("4"), Host("B")),
+        LogLine(Timestamp(350), Host("35"), Host("C")),
         LogLine(Timestamp(120), Host("12"), Host("A")),
         LogLine(Timestamp(130), Host("13"), Host("A")),
-        LogLine(Timestamp(140), Host("14"), Host("A")),
-        LogLine(Timestamp(150), Host("15"), Host("A")),
-        LogLine(Timestamp(160), Host("16"), Host("A")),
-        LogLine(Timestamp(170), Host("17"), Host("A")),
-        LogLine(Timestamp(180), Host("18"), Host("A")),
-        LogLine(Timestamp(190), Host("19"), Host("A")),
-        LogLine(Timestamp(200), Host("20"), Host("A")),
-        LogLine(Timestamp(210), Host("21"), Host("A")),
-        LogLine(Timestamp(220), Host("22"), Host("C")),
         LogLine(Timestamp(230), Host("23"), Host("C")),
-        LogLine(Timestamp(240), Host("24"), Host("C")),
-        LogLine(Timestamp(250), Host("25"), Host("C")),
-        LogLine(Timestamp(260), Host("26"), Host("C")),
-        LogLine(Timestamp(270), Host("27"), Host("C")),
+        LogLine(Timestamp(110), Host("11"), Host("B")),
+        LogLine(Timestamp(0), Host("0"), Host("B")),
         LogLine(Timestamp(280), Host("28"), Host("C")),
-        LogLine(Timestamp(290), Host("29"), Host("C")),
-        LogLine(Timestamp(300), Host("30"), Host("C")),
-        LogLine(Timestamp(310), Host("31"), Host("C")),
         LogLine(Timestamp(320), Host("32"), Host("C")),
-        LogLine(Timestamp(330), Host("33"), Host("C")),
-        LogLine(Timestamp(340), Host("34"), Host("C")),
-        LogLine(Timestamp(350), Host("35"), Host("C")),
+        LogLine(Timestamp(60), Host("6"), Host("B")),
+        LogLine(Timestamp(290), Host("29"), Host("C")),
+        LogLine(Timestamp(310), Host("31"), Host("C")),
+        LogLine(Timestamp(220), Host("22"), Host("C")),
+        LogLine(Timestamp(250), Host("25"), Host("C")),
+        LogLine(Timestamp(190), Host("19"), Host("A")),
+        LogLine(Timestamp(260), Host("26"), Host("C")),
     )
 }
