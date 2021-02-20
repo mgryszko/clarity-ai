@@ -1,10 +1,6 @@
 package periodicreports
 
-import ch.tutteli.atrium.api.fluent.en_GB.contains
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.feature
 import ch.tutteli.atrium.api.fluent.en_GB.hasSize
-import ch.tutteli.atrium.api.fluent.en_GB.inAnyOrder
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import file.FileLogReader
@@ -19,7 +15,7 @@ class PeriodicReportsAcceptanceTest {
     val emitter = ReportCollector(renderer)
     val logFile = File(javaClass.getResource("/input-file-10000.txt").path!!)
     val handler = PeriodicReportsHandler(
-        logReader = FileLogReader(logFile, Duration(0)),
+        logReader = FileLogReader(logFile),
         emitter = emitter,
         actionsByFilters = mapOf(
             incomingConnectionToTarget(Host("Aaliayh")) to onOutgoingConnection(emitter),

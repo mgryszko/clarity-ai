@@ -29,7 +29,7 @@ class FileLogReaderTest {
 
         @Test
         fun `zero timeout`() = runBlockingTest {
-            val reader = FileLogReader(1.linesLogFile(), Duration(0))
+            val reader = FileLogReader(1.linesLogFile())
 
             val linesRead = countReadLines(reader)
 
@@ -39,7 +39,7 @@ class FileLogReaderTest {
 
         @Test
         fun `empty file`() = runBlockingTest {
-            val reader = FileLogReader(0.linesLogFile(), Duration(0))
+            val reader = FileLogReader(0.linesLogFile())
 
             expect(countReadLines(reader)).toBe(0)
         }
@@ -56,7 +56,7 @@ class FileLogReaderTest {
                     writer.println()
                 }
             }
-            val reader = FileLogReader(file, Duration(0))
+            val reader = FileLogReader(file)
 
             expect(countReadLines(reader)).toBe(2)
         }
@@ -65,7 +65,7 @@ class FileLogReaderTest {
         fun `wrong format`() {
             expect {
                 runBlockingTest {
-                    val reader = FileLogReader(tempFile { it.writeText("1 source") }, Duration(0))
+                    val reader = FileLogReader(tempFile { it.writeText("1 source") })
                     countReadLines(reader)
                 }
             }.toThrow<UnparseableLogLineException>()
@@ -82,7 +82,7 @@ class FileLogReaderTest {
     inner class GetFirstTimestamp {
         @Test
         fun `without first blank lines`() = runBlockingTest {
-            val reader = FileLogReader(1.linesLogFile(), Duration(0))
+            val reader = FileLogReader(1.linesLogFile())
 
             expect(reader.getInitialTimestamp()).toBe(Timestamp(0))
         }
@@ -97,7 +97,7 @@ class FileLogReaderTest {
                 }
             }
 
-            val reader = FileLogReader(file, Duration(0))
+            val reader = FileLogReader(file)
 
             expect(reader.getInitialTimestamp()).toBe(Timestamp(100))
         }
@@ -106,7 +106,7 @@ class FileLogReaderTest {
         fun `empty file`() {
             expect {
                 runBlockingTest {
-                    val reader = FileLogReader(tempFile { }, Duration(0))
+                    val reader = FileLogReader(tempFile { })
                     reader.getInitialTimestamp()
                 }
             }.toThrow<LogEmptyException>()
