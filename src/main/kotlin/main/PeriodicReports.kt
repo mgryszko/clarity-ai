@@ -10,8 +10,8 @@ import log.Duration
 import log.Host
 import periodicreports.PeriodicReportsHandler
 import periodicreports.ReportCollector
-import periodicreports.connectedToTarget
-import periodicreports.onSourceConnected
+import periodicreports.incomingConnectionToTarget
+import periodicreports.onOutgoingConnection
 import java.io.File
 
 class PeriodicReports : CliktCommand() {
@@ -31,7 +31,7 @@ class PeriodicReports : CliktCommand() {
             logReader = FileLogReader(File(logFileName), Duration(timeoutMs)),
             emitter = ReportCollector(::println),
             actionsByFilters = mapOf(
-                connectedToTarget(Host(host)) to onSourceConnected(ReportCollector(::println))
+                incomingConnectionToTarget(Host(host)) to onOutgoingConnection(ReportCollector(::println))
             )
         ).handle(
             Duration(reportFreqMs),

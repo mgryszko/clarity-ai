@@ -4,8 +4,8 @@ import log.LogLine
 
 typealias LogLineAction = (LogLine) -> Unit
 
-fun onSourceConnected(collector: ReportCollector): LogLineAction = { collector.sourceHostConnected(it.source) }
+fun onOutgoingConnection(collector: ReportCollector): LogLineAction = { collector.outgoingConnectionFrom(it.source) }
 
-fun onConnectedToTarget(collector: ReportCollector): LogLineAction = { collector.connectedToTarget(it.target) }
+fun onIncomingConnection(collector: ReportCollector): LogLineAction = { collector.incomingConnectionTo(it.target) }
 
 fun topOutgoingConnections(collector: ReportCollector): LogLineAction = { collector.topOutgoingConnections(it.source) }

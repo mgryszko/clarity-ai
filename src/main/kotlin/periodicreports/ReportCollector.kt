@@ -53,17 +53,17 @@ interface ReportEmitter {
 }
 
 class ReportCollector(private val onReportReady: ((Report) -> Unit)) : ReportEmitter {
-    private val sourceHosts = mutableSetOf<Host>()
-    private val targetHosts = mutableSetOf<Host>()
+    private val outgoingConnectionsFromSources = mutableSetOf<Host>()
+    private val incomingConnectionsToTargets = mutableSetOf<Host>()
     private val topOutgoingConnections = TopCounter<Host>()
     private val emptyReport = Report()
 
-    fun sourceHostConnected(source: Host) {
-        sourceHosts.add(source)
+    fun outgoingConnectionFrom(source: Host) {
+        outgoingConnectionsFromSources.add(source)
     }
 
-    fun connectedToTarget(target: Host) {
-        targetHosts.add(target)
+    fun incomingConnectionTo(target: Host) {
+        incomingConnectionsToTargets.add(target)
     }
 
     fun topOutgoingConnections(source: Host) {
@@ -71,9 +71,15 @@ class ReportCollector(private val onReportReady: ((Report) -> Unit)) : ReportEmi
     }
 
     override fun emitReport() {
-        onReportReady(Report(sources = sourceHosts.toSet(), targets = targetHosts.toSet(), topOutgoingConnections = topOutgoingConnections.topKey()))
-        sourceHosts.clear()
-        targetHosts.clear()
+        onReportReady(
+            Report(
+                sources = outgoingConnectionsFromSources.toSet(),
+                targets = incomingConnectionsToTargets.toSet(),
+                topOutgoingConnections = topOutgoingConnections.topKey()
+            )
+        )
+        outgoingConnectionsFromSources.clear()
+        incomingConnectionsToTargets.clear()
         topOutgoingConnections.clear()
     }
 

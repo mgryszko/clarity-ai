@@ -22,7 +22,7 @@ class PeriodicReportsHandlerTest {
         val handler = PeriodicReportsHandler(
             logReader = FileLogReader(logFile, Duration(0)),
             emitter = emitter,
-            actionsByFilters = mapOf(connectedToTarget(Host("Aaliayh")) to onSourceConnected(emitter))
+            actionsByFilters = mapOf(incomingConnectionToTarget(Host("Aaliayh")) to onOutgoingConnection(emitter))
         )
         val oneHour = Duration(60 * 60 * 1000)
         val fiveMinutes = Duration(5 * 60 * 1000)
@@ -64,10 +64,10 @@ class PeriodicReportsHandlerTest {
     }
 
     @Nested
-    inner class ReceivedConnectionFromSource {
+    inner class TargetsWithIncomingConnectionsFromSource {
         @Test
         fun `received connections from sources in all report periods`() {
-            val actionsByFilters = mapOf(receivedConnectionFromSource(Host("A")) to onConnectedToTarget(emitter))
+            val actionsByFilters = mapOf(outgoingConnectionFromSource(Host("A")) to onIncomingConnection(emitter))
 
             PeriodicReportsHandler(ListLogReader(lines), emitter, actionsByFilters).handle(
                 reportPeriod = Duration(1000),
@@ -116,10 +116,10 @@ class PeriodicReportsHandlerTest {
     }
 
     @Nested
-    inner class ConnectedToTarget {
+    inner class SourcesWithOutgoingConnectionToTarget {
         @Test
         fun `connected sources in all report periods`() {
-            val actionsByFilters = mapOf(connectedToTarget(Host("A")) to onSourceConnected(emitter))
+            val actionsByFilters = mapOf(incomingConnectionToTarget(Host("A")) to onOutgoingConnection(emitter))
 
             PeriodicReportsHandler(ListLogReader(lines), emitter, actionsByFilters).handle(
                 reportPeriod = Duration(1000),
@@ -223,7 +223,7 @@ class PeriodicReportsHandlerTest {
     inner class CornerCases {
         @Test
         fun `repeated log lines`() {
-            val actionsByFilters = mapOf(connectedToTarget(Host("A")) to onSourceConnected(emitter))
+            val actionsByFilters = mapOf(incomingConnectionToTarget(Host("A")) to onOutgoingConnection(emitter))
             val lines = listOf(
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
@@ -241,7 +241,7 @@ class PeriodicReportsHandlerTest {
 
         @Test
         fun `out of order log lines`() {
-            val actionsByFilters = mapOf(connectedToTarget(Host("A")) to onSourceConnected(emitter))
+            val actionsByFilters = mapOf(incomingConnectionToTarget(Host("A")) to onOutgoingConnection(emitter))
             val lines = listOf(
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
                 LogLine(Timestamp(200), Host("omega"), Host("B")),
@@ -265,7 +265,7 @@ class PeriodicReportsHandlerTest {
 
         @Test
         fun `no log lines passing filters in reporting period`() {
-            val actionsByFilters = mapOf(connectedToTarget(Host("A")) to onSourceConnected(emitter))
+            val actionsByFilters = mapOf(incomingConnectionToTarget(Host("A")) to onOutgoingConnection(emitter))
             val lines = listOf(
                 LogLine(Timestamp(0), Host("omega"), Host("B")),
                 LogLine(Timestamp(999), Host("omega"), Host("B")),
@@ -285,7 +285,7 @@ class PeriodicReportsHandlerTest {
 
         @Test
         fun `no log lines in report periods`() {
-            val actionsByFilters = mapOf(connectedToTarget(Host("A")) to onSourceConnected(emitter))
+            val actionsByFilters = mapOf(incomingConnectionToTarget(Host("A")) to onOutgoingConnection(emitter))
             val lines = listOf(
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
                 LogLine(Timestamp(3000), Host("beta"), Host("A")),
