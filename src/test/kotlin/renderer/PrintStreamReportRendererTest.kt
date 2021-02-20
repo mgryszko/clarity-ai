@@ -11,13 +11,12 @@ import java.io.PrintStream
 
 class PrintStreamReportRendererTest {
     val out = ByteArrayOutputStream()
-    val stream = PrintStream(out, true)
     val renderer = PrintStreamReportRenderer(PrintStream(out, true))
 
     @Test
     fun render() {
         val report = ConnectionReport(
-            timestamp = Timestamp(0),
+            timestamp = Timestamp(1613806916032),
             incomingFrom = setOf(Host("A"), Host("B")),
             outgoingTo = setOf(Host("C"), Host("D"), Host("E")),
             topOutgoing = setOf(Host("F"), Host("G")),
@@ -27,9 +26,11 @@ class PrintStreamReportRendererTest {
 
         val subject = out.toString()
         expect(subject) {
-            contains("Incoming connections: A, B")
-            contains("Outgoing connections: C, D, E")
-            contains("Top outgoing connections: F, G")
+            contains("Report on: 2021-02-20T07:41:56")
+            contains("1613806916032")
+            contains("incoming connections: A, B")
+            contains("outgoing connections: C, D, E")
+            contains("top outgoing connections: F, G")
         }
     }
 }
