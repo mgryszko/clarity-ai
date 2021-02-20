@@ -1,6 +1,7 @@
 package connectedsources
 
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.verbs.expect
 import log.Host
 import log.LogLine
@@ -65,6 +66,17 @@ class ConnectedSourceHostsHandlerTest {
         )
 
         expect(hosts).containsExactly(Host("alpha"), Host("beta"))
+    }
+
+    @Test
+    fun `empty log`() {
+        val hosts = ConnectedSourceHostsHandler(ListLogReader(emptyList())).handle(
+            target = Host("any"),
+            from = Timestamp(0),
+            to = Timestamp(0),
+        )
+
+        expect(hosts).isEmpty()
     }
 
     val lines = listOf(

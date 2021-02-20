@@ -1,6 +1,7 @@
 package periodicreports
 
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.verbs.expect
 import log.Duration
 import log.Host
@@ -268,6 +269,18 @@ class PeriodicReportsHandlerTest {
                 ConnectionReport(incomingFrom = emptySet(), timestamp = Timestamp(3000)),
                 ConnectionReport(incomingFrom = setOf(Host("beta")), timestamp = Timestamp(4000)),
             )
+        }
+
+        @Test
+        fun `empty log`() {
+            val actionsByFilters = mapOf(pass to onOutgoingConnection(emitter))
+
+            PeriodicReportsHandler(ListLogReader(emptyList()), emitter, actionsByFilters).handle(
+                reportPeriod = Duration(1000),
+                maxTolerableLag = Duration(0),
+            )
+
+            expect(renderer.reports).isEmpty()
         }
     }
 }

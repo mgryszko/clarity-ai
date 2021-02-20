@@ -59,6 +59,8 @@ class PeriodicReportGenerator(
     }
 
     fun noMoreLines() {
-        emitter.emitReport(nextReportTimestamp)
+        if (!firstLine) {
+            emitter.emitReport(nextReportTimestamp)
+        }
     }
 }
