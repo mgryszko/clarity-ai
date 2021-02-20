@@ -2,50 +2,34 @@ package periodicreports
 
 import log.Host
 import log.Timestamp
-import java.util.*
 
-// Data structure allowing counting and retrieving the top key in log(n) time
 private class TopCounter<K> {
-    private val keysByCounters = TreeMap<Int, Set<K>>()
     private val countersByKeys = mutableMapOf<K, Int>()
 
     fun increment(key: K) {
         val count = countersByKeys.getOrDefault(key, 0)
-
         countersByKeys[key] = count + 1
-
-        removeKeyFromCounter(key, count)
-        addKeyToCounter(key, count + 1)
     }
 
-    private fun addKeyToCounter(key: K, count: Int) {
-        keysByCounters.putIfAbsent(count, emptySet())
-        keysByCounters.computeIfPresent(count) { _, keys -> keys + key }
+    fun topCount(): Int = sortedCountersByKeys().firstOrZero()
+
+    fun topKeys(): Set<K>  {
+        val sorted = sortedCountersByKeys()
+        val topCount = sorted.firstOrZero()
+        return sorted.takeWhile { it.value == topCount }.map { it.key }.toSet()
     }
 
-    private fun removeKeyFromCounter(key: K, count: Int) {
-        val keys = keysByCounters.getOrDefault(count, emptySet())
-        // optimization - don't keep empty sets in memory
-        (keys - key).let {
-            if (it.isEmpty()) {
-                keysByCounters.remove(count)
-            } else {
-                keysByCounters[count] = it
-            }
-        }
-    }
+    private fun <K> List<Map.Entry<K, Int>>.firstOrZero(): Int = this.firstOrNull()?.value ?: 0
 
-    fun topCount(): Int = keysByCounters.lastEntry()?.key ?: 0
-
-    fun topKeys(): Set<K> = keysByCounters.lastEntry()?.value ?: emptySet()
+    private fun sortedCountersByKeys(): List<Map.Entry<K, Int>> = countersByKeys.entries.sortedByDescending { it.value }
 
     fun clear() {
         countersByKeys.clear()
-        keysByCounters.clear()
     }
 
-    override fun toString(): String = "TopCounter(keysByCounters=$keysByCounters, countersByKeys=$countersByKeys)"
+    override fun toString(): String = "TopCounter(countersByKeys=$countersByKeys)"
 }
+
 
 class ReportCollector(private val renderer: ReportRenderer) : ReportEmitter {
     private val outgoingConnectionsFromSources = mutableSetOf<Host>()
