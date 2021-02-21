@@ -7,6 +7,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.long
 import connectedsources.ConnectedSourceHostsHandler
 import file.FileLogReader
+import kotlinx.coroutines.runBlocking
 import log.Host
 import log.Timestamp
 import java.io.File
@@ -17,7 +18,7 @@ class ConnectedSourceHosts : CliktCommand() {
     private val fromMs: Long by option("-f", "--from", help = "timestamp from inclusive").long().default(0)
     private val toMs: Long by option("-t", "--to", help = "timestamp to inclusive").long().default(Long.MAX_VALUE)
 
-    override fun run() {
+    override fun run() = runBlocking {
         ConnectedSourceHostsHandler(FileLogReader(File(logFileName)))
             .handle(Host(target), Timestamp(fromMs), Timestamp(toMs))
             .map(Host::name)

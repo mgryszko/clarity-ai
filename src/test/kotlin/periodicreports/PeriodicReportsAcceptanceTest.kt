@@ -4,12 +4,15 @@ import ch.tutteli.atrium.api.fluent.en_GB.hasSize
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import file.FileLogReader
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import log.Duration
 import log.Host
 import log.Timestamp
 import java.io.File
 import kotlin.test.Test
 
+@ExperimentalCoroutinesApi
 class PeriodicReportsAcceptanceTest {
     val renderer = CollectingReportRenderer()
     val emitter = ReportCollector(renderer)
@@ -27,7 +30,7 @@ class PeriodicReportsAcceptanceTest {
     val fiveMinutes = Duration(5 * 60 * 1000)
 
     @Test
-    fun handle() {
+    fun handle() = runBlockingTest {
         handler.handle(
             reportPeriod = oneHour,
             maxTolerableLag = fiveMinutes

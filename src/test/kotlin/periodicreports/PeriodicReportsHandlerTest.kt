@@ -3,6 +3,8 @@ package periodicreports
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.verbs.expect
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import log.Duration
 import log.Host
 import log.LogLine
@@ -11,6 +13,7 @@ import memory.ListLogReader
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test
 
+@ExperimentalCoroutinesApi
 class PeriodicReportsHandlerTest {
     val renderer = CollectingReportRenderer()
     val emitter = ReportCollector(renderer)
@@ -18,7 +21,7 @@ class PeriodicReportsHandlerTest {
     @Nested
     inner class TargetsWithIncomingConnectionsFromSource {
         @Test
-        fun `received connections from sources in all report periods`() {
+        fun `received connections from sources in all report periods`() = runBlockingTest {
             val actionsByFilters = mapOf(outgoingConnectionFromSource(Host("A")) to onIncomingConnection(emitter))
 
             PeriodicReportsHandler(ListLogReader(lines), emitter, actionsByFilters).handle(
@@ -73,7 +76,7 @@ class PeriodicReportsHandlerTest {
     @Nested
     inner class SourcesWithOutgoingConnectionToTarget {
         @Test
-        fun `connected sources in all report periods`() {
+        fun `connected sources in all report periods`() = runBlockingTest {
             val actionsByFilters = mapOf(incomingConnectionToTarget(Host("A")) to onOutgoingConnection(emitter))
 
             PeriodicReportsHandler(ListLogReader(lines), emitter, actionsByFilters).handle(
@@ -128,7 +131,7 @@ class PeriodicReportsHandlerTest {
     @Nested
     inner class TopOutgoingConnections {
         @Test
-        fun `top outgoing connections`() {
+        fun `top outgoing connections`() = runBlockingTest {
             val actionsByFilters = mapOf(pass to topOutgoingConnections(emitter))
 
             PeriodicReportsHandler(ListLogReader(lines), emitter, actionsByFilters).handle(
@@ -181,7 +184,7 @@ class PeriodicReportsHandlerTest {
     @Nested
     inner class CornerCases {
         @Test
-        fun `repeated log lines`() {
+        fun `repeated log lines`() = runBlockingTest {
             val actionsByFilters = mapOf(incomingConnectionToTarget(Host("A")) to onOutgoingConnection(emitter))
             val lines = listOf(
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
@@ -204,7 +207,7 @@ class PeriodicReportsHandlerTest {
         }
 
         @Test
-        fun `out of order log lines`() {
+        fun `out of order log lines`() = runBlockingTest {
             val actionsByFilters = mapOf(incomingConnectionToTarget(Host("A")) to onOutgoingConnection(emitter))
             val lines = listOf(
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
@@ -231,7 +234,7 @@ class PeriodicReportsHandlerTest {
         }
 
         @Test
-        fun `no log lines passing filters in reporting period`() {
+        fun `no log lines passing filters in reporting period`() = runBlockingTest {
             val actionsByFilters = mapOf(incomingConnectionToTarget(Host("A")) to onOutgoingConnection(emitter))
             val lines = listOf(
                 LogLine(Timestamp(0), Host("omega"), Host("B")),
@@ -251,7 +254,7 @@ class PeriodicReportsHandlerTest {
         }
 
         @Test
-        fun `no log lines in report periods`() {
+        fun `no log lines in report periods`() = runBlockingTest {
             val actionsByFilters = mapOf(incomingConnectionToTarget(Host("A")) to onOutgoingConnection(emitter))
             val lines = listOf(
                 LogLine(Timestamp(0), Host("alpha"), Host("A")),
@@ -272,7 +275,7 @@ class PeriodicReportsHandlerTest {
         }
 
         @Test
-        fun `empty log`() {
+        fun `empty log`() = runBlockingTest {
             val actionsByFilters = mapOf(pass to onOutgoingConnection(emitter))
 
             PeriodicReportsHandler(ListLogReader(emptyList()), emitter, actionsByFilters).handle(

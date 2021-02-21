@@ -6,6 +6,7 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.long
 import file.FileLogReader
+import kotlinx.coroutines.runBlocking
 import log.Duration
 import log.Host
 import periodicreports.PeriodicReportsHandler
@@ -31,7 +32,7 @@ class PeriodicReports : CliktCommand() {
         .long().default(fiveMinutes)
     private val timeoutMs: Long by option("-t", "--timeout", help = "log inactivity timeout").long().default(thirtySeconds)
 
-    override fun run() {
+    override fun run() = runBlocking {
         val collector = ReportCollector(PrintStreamReportRenderer(System.out))
         PeriodicReportsHandler(
             logReader = FileLogReader(File(logFileName), Duration(timeoutMs)),

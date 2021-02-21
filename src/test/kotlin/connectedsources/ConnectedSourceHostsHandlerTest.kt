@@ -3,15 +3,18 @@ package connectedsources
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import log.Host
 import log.LogLine
 import log.Timestamp
 import memory.ListLogReader
 import kotlin.test.Test
 
+@ExperimentalCoroutinesApi
 class ConnectedSourceHostsHandlerTest {
     @Test
-    fun `exact timestamps`() {
+    fun `exact timestamps`() = runBlockingTest {
         val hosts = ConnectedSourceHostsHandler(ListLogReader(lines)).handle(
             target = Host("A"),
             from = Timestamp(130),
@@ -28,7 +31,7 @@ class ConnectedSourceHostsHandlerTest {
     }
 
     @Test
-    fun `timestamps expanded range by 1ms`() {
+    fun `timestamps expanded range by 1ms`() = runBlockingTest {
         val hosts = ConnectedSourceHostsHandler(ListLogReader(lines)).handle(
             target = Host("A"),
             from = Timestamp(129),
@@ -45,7 +48,7 @@ class ConnectedSourceHostsHandlerTest {
     }
 
     @Test
-    fun `timestamps reduced range by 1ms`() {
+    fun `timestamps reduced range by 1ms`() = runBlockingTest {
         val hosts = ConnectedSourceHostsHandler(ListLogReader(lines)).handle(
             target = Host("A"),
             from = Timestamp(131),
@@ -56,7 +59,7 @@ class ConnectedSourceHostsHandlerTest {
     }
 
     @Test
-    fun `host not found`() {
+    fun `host not found`() = runBlockingTest {
         val hosts = ConnectedSourceHostsHandler(ListLogReader(lines)).handle(
             target = Host("notFound"),
             from = Timestamp(0),
@@ -67,7 +70,7 @@ class ConnectedSourceHostsHandlerTest {
     }
 
     @Test
-    fun `repeated source hosts`() {
+    fun `repeated source hosts`() = runBlockingTest {
         val lines = listOf(
             LogLine(Timestamp(0), Host("alpha"), Host("A")),
             LogLine(Timestamp(0), Host("alpha"), Host("A")),
@@ -84,7 +87,7 @@ class ConnectedSourceHostsHandlerTest {
     }
 
     @Test
-    fun `empty log`() {
+    fun `empty log`() = runBlockingTest {
         val hosts = ConnectedSourceHostsHandler(ListLogReader(emptyList())).handle(
             target = Host("any"),
             from = Timestamp(0),

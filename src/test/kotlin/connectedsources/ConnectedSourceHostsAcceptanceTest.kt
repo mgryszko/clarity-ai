@@ -3,17 +3,20 @@ package connectedsources
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.verbs.expect
 import file.FileLogReader
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import log.Host
 import log.Timestamp
 import java.io.File
 import kotlin.test.Test
 
+@ExperimentalCoroutinesApi
 class ConnectedSourceHostsAcceptanceTest {
     val logFileName = javaClass.getResource("/input-file-10000.txt").path!!
     val handler = ConnectedSourceHostsHandler(FileLogReader(File(logFileName)))
 
     @Test
-    fun `log from file, spying reports observer`() {
+    fun `log from file, spying reports observer`() = runBlockingTest {
         val hosts = handler.handle(
             target = Host("Aaliayh"),
             from = Timestamp(1565656607767),
